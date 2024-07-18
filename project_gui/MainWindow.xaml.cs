@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using project_logic;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -11,39 +12,18 @@ namespace project_gui
     /// </summary>
     public partial class MainWindow : Window
     {
-        private readonly int[] board =
-        {
-            1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-            1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-            1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 0, 1,
-            1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-            1, 0, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 0, 1,
-            1, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1,
-            1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1,
-            1, 1, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 1,
-            1, 1, 1, 1, 0, 1, 0, 1, 1, 0, 1, 1, 0, 1, 0, 1, 1, 1, 1,
-            0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0 ,0 ,0, 0, 0, 0, 0,
-            1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1,
-            1, 1, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 1,
-            1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1,
-            1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-            1, 0, 1, 1, 0 ,1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 0, 1,
-            1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1,
-            1, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 1, 1,
-            1, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1,
-            1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1,
-            1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-            1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
-        };
-
         private const int _rows = 21;
         private const int _cols = 19;
         private const int _cellSize = 40;
+        private readonly int[,] board = GameTools._boardPattern;
+        private readonly GameState _gameState;
 
         public MainWindow()
         {
             InitializeComponent();
             CreateBoard();
+            _gameState = new GameState(_cellSize);
+            var test = _gameState.CanMove(Direction.Up, new project_logic.Point(150, 110));
 
             // test
             string imagePath = "assets/Ghost 1 3.png";
@@ -52,8 +32,8 @@ namespace project_gui
             img.Width = _cellSize - 2;
             img.Height = _cellSize - 2;
            
-            Canvas.SetLeft(img, _cellSize * 3+ 1); 
-            Canvas.SetTop(img, _cellSize * 3+ 1); 
+            Canvas.SetLeft(img, 10 + 1); 
+            Canvas.SetTop(img, 10 + 1); 
 
             gameCanvas.Children.Add(img);
         }
@@ -67,67 +47,67 @@ namespace project_gui
             };
 
             int value = isPath ? 1 : 0;
-            bool top = (row > 0) && board[(row - 1) * _cols + col] == value;
-            bool bottom = (row < _rows - 1) && board[(row + 1) * _cols + col] == value;
-            bool left = (col > 0) && board[row * _cols + (col - 1)] == value;
-            bool right = (col < _cols - 1) && board[row * _cols + (col + 1)] == value;
+            bool top = (row > 0) && board[row - 1, col] == value;
+            bool bottom = (row < _rows - 1) && board[row + 1, col] == value;
+            bool left = (col > 0) && board[row, col - 1] == value;
+            bool right = (col < _cols - 1) && board[row, col + 1] == value;
 
             Path path = new Path();
             PathGeometry geometry = new PathGeometry();
-            PathFigure figure = new PathFigure { StartPoint = new Point(0, 0) };
+            PathFigure figure = new PathFigure { StartPoint = new System.Windows.Point(0, 0) };
 
             // Top-left corner
-            figure.Segments.Add(new LineSegment(new Point(0, cornerRadius), true));
+            figure.Segments.Add(new LineSegment(new System.Windows.Point(0, cornerRadius), true));
             if (top && left)
             {
-                figure.Segments.Add(new ArcSegment(new Point(cornerRadius, 0), new Size(cornerRadius, cornerRadius), 0, false, SweepDirection.Clockwise, true));
+                figure.Segments.Add(new ArcSegment(new System.Windows.Point(cornerRadius, 0), new Size(cornerRadius, cornerRadius), 0, false, SweepDirection.Clockwise, true));
             }
             else
             {
-                figure.Segments.Add(new LineSegment(new Point(0, 0), true));
+                figure.Segments.Add(new LineSegment(new System.Windows.Point(0, 0), true));
             }
 
             // Top-right corner
-            figure.Segments.Add(new LineSegment(new Point(_cellSize - cornerRadius, 0), true));
+            figure.Segments.Add(new LineSegment(new System.Windows.Point(_cellSize - cornerRadius, 0), true));
             if (top && right)
             {
-                figure.Segments.Add(new ArcSegment(new Point(_cellSize, cornerRadius), new Size(cornerRadius, cornerRadius), 0, false, SweepDirection.Clockwise, true));
+                figure.Segments.Add(new ArcSegment(new System.Windows.Point(_cellSize, cornerRadius), new Size(cornerRadius, cornerRadius), 0, false, SweepDirection.Clockwise, true));
             }
             else
             {
-                figure.Segments.Add(new LineSegment(new Point(_cellSize, 0), true));
+                figure.Segments.Add(new LineSegment(new System.Windows.Point(_cellSize, 0), true));
             }
 
             // Bottom-right corner
-            figure.Segments.Add(new LineSegment(new Point(_cellSize, _cellSize - cornerRadius), true));
+            figure.Segments.Add(new LineSegment(new System.Windows.Point(_cellSize, _cellSize - cornerRadius), true));
             if (bottom && right)
             {
-                figure.Segments.Add(new ArcSegment(new Point(_cellSize - cornerRadius, _cellSize), new Size(cornerRadius, cornerRadius), 0, false, SweepDirection.Clockwise, true));
+                figure.Segments.Add(new ArcSegment(new System.Windows.Point(_cellSize - cornerRadius, _cellSize), new Size(cornerRadius, cornerRadius), 0, false, SweepDirection.Clockwise, true));
             }
             else
             {
-                figure.Segments.Add(new LineSegment(new Point(_cellSize, _cellSize), true));
+                figure.Segments.Add(new LineSegment(new System.Windows.Point(_cellSize, _cellSize), true));
             }
 
             // Bottom-left corner
-            figure.Segments.Add(new LineSegment(new Point(cornerRadius, _cellSize), true));
+            figure.Segments.Add(new LineSegment(new System.Windows.Point(cornerRadius, _cellSize), true));
             if (bottom && left)
             {
-                figure.Segments.Add(new ArcSegment(new Point(0, _cellSize - cornerRadius), new Size(cornerRadius, cornerRadius), 0, false, SweepDirection.Clockwise, true));
+                figure.Segments.Add(new ArcSegment(new System.Windows.Point(0, _cellSize - cornerRadius), new Size(cornerRadius, cornerRadius), 0, false, SweepDirection.Clockwise, true));
             }
             else
             {
-                figure.Segments.Add(new LineSegment(new Point(0, _cellSize), true));
+                figure.Segments.Add(new LineSegment(new System.Windows.Point(0, _cellSize), true));
             }
 
             // Close the path
             if (top && left)
             {
-                figure.Segments.Add(new LineSegment(new Point(0, cornerRadius), true));
+                figure.Segments.Add(new LineSegment(new System.Windows.Point(0, cornerRadius), true));
             }
             else
             {
-                figure.Segments.Add(new LineSegment(new Point(0, 0), true));
+                figure.Segments.Add(new LineSegment(new System.Windows.Point(0, 0), true));
             }
 
             geometry.Figures.Add(figure);
@@ -158,10 +138,8 @@ namespace project_gui
             {
                 for (int col = 0; col < _cols; col++)
                 {
-                    int index = row * _cols + col;
-
                     // block
-                    if (board[index] == 1)
+                    if (GameTools._boardPattern[row, col] == 1)
                     {
                         DrawField(cornerRadius, row, col, false);
                     }

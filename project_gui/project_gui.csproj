@@ -53,6 +53,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\project_logic\project_logic.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Resource Include="assets\audio1.wav" />
     <Resource Include="assets\Block 1.png" />
     <Resource Include="assets\Block 2.png" />
