@@ -11,7 +11,7 @@
             steps = 0;
             speed = 10;
             position = new Point(9 * cellSize, 11 * cellSize);
-            direction = Direction.Right;
+            direction = Direction.Up;
             nextDirection = direction;
         }
 
@@ -19,7 +19,7 @@
         {
             base.Move();
             steps++;
-            steps = steps % 7;
+            steps = steps % 10;
         }
     }
 }

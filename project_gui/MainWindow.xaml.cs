@@ -21,7 +21,7 @@ namespace project_gui
         private readonly Pacman _packman;
         private readonly Image _packmanImg;
         private bool _isRunning;
-        private int _gameSpeed = 7;
+        private int _gameSpeed = 5;
 
         public MainWindow()
         {

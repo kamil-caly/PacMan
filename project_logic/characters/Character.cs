@@ -35,6 +35,13 @@
                     newX = position.x + 1;
                     col = (int)Math.Ceiling(newX / cellSize);
                     row = (double)position.y / cellSize;
+
+                    // przypadek przechodzenia przez tunel
+                    if (col >= board.GetLength(1) && row == 9)
+                    {
+                        return true;
+                    }
+
                     if (row % 1 == 0)
                     {
                         return board[(int)row, (int)col] == 0;
@@ -53,6 +60,13 @@
                     newX = position.x - 1;
                     col = (int)Math.Floor(newX / cellSize);
                     row = (double)position.y / cellSize;
+
+                    // przypadek przechodzenia przez tunel
+                    if (col <= 0 && row == 9)
+                    {
+                        return true;
+                    }
+
                     if (row % 1 == 0)
                     {
                         return board[(int)row, (int)col] == 0;
@@ -85,6 +99,11 @@
                     break;
                 case Direction.Right:
                     newX = position.x + 1;
+                    // przypadek przechodzenia przez tunel
+                    if (newX > (board.GetLength(1) - 1) * cellSize)
+                    {
+                        newX = 0;
+                    }
                     position.x = newX;
                     break;
                 case Direction.Down:
@@ -93,6 +112,11 @@
                     break;
                 case Direction.Left:
                     newX = position.x - 1;
+                    // przypadek przechodzenia przez tunel
+                    if (newX < 0)
+                    {
+                        newX = (board.GetLength(1) - 1) * cellSize;
+                    }
                     position.x = newX;
                     break;
                 default:
