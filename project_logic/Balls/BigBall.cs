@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace project_logic.Balls
+﻿namespace project_logic.Balls
 {
     public class BigBall : Ball
     {
-        public BigBall(int len, Point position) : base(len, position)
+        public BigBall(int len, PointD position, int cellSize) : base(len, position, cellSize)
         {
         }
     }

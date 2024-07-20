@@ -14,26 +14,36 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <StackPanel Orientation="Horizontal" Grid.Row="0" HorizontalAlignment="Center">
+        <Grid Grid.Row="0" Width="700">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
             <TextBox x:Name="scoreTextBox" 
-                     Text="SCORE: 0" 
-                     FontFamily="Arial Black"
-                     Foreground="White" 
-                     Background="Black" 
-                     BorderBrush="Black" 
-                     FontSize="32" 
-                     IsReadOnly="True" 
-                     Margin="0 30 0 0"/>
+                 Text="SCORE: 0" 
+                 FontFamily="Arial Black"
+                 Foreground="White" 
+                 Background="Black" 
+                 BorderBrush="Black" 
+                 FontSize="30" 
+                 IsReadOnly="True"
+                 Padding="0 20"
+                 HorizontalAlignment="Left"
+                 Grid.Column="0"/>
+
             <TextBox x:Name="highScoreTextBox" 
-                     Text="HIGH SCORE: 0" 
-                     FontFamily="Arial Black"
-                     Foreground="White" 
-                     Background="Black" 
-                     BorderBrush="Black" 
-                     FontSize="32" 
-                     IsReadOnly="True" 
-                     Margin="90 30 0 30"/>
-        </StackPanel>
+                 Text="HIGH SCORE: 0" 
+                 FontFamily="Arial Black"
+                 Foreground="White" 
+                 Background="Black" 
+                 BorderBrush="Black" 
+                 FontSize="30" 
+                 IsReadOnly="True"
+                 Padding="0 20"
+                 HorizontalAlignment="Left"
+                 Grid.Column="1"/>
+        </Grid>
 
         <Canvas x:Name="gameCanvas" Grid.Row="1" Background="Black">
         </Canvas>

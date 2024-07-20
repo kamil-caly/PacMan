@@ -3,21 +3,28 @@
     public abstract class Ball
     {
         public int _len { get; set; }
-        public Point _position { get; set; }
-        protected Ball(int len, Point position)
+        public int _cellSize { get; set; }
+        public PointD _position { get; set; }
+        protected Ball(int len, PointD position, int cellSize)
         {
             _len = len;
             _position = position;
+            _cellSize = cellSize;
         }
 
         public bool CanRemoveBall(Point pacmanPos)
         {
             int startX = pacmanPos.x + 5;
-            int endX = pacmanPos.x - 5;
+            int endX = pacmanPos.x + _cellSize - 5;
             int startY = pacmanPos.y + 5;
-            int endY = pacmanPos.y - 5;
+            int endY = pacmanPos.y + _cellSize - 5;
 
-            if (_position.x >= startX && _position.x + _len <= endX && _position.y >= startY && _position.y + _len <= endY)
+            double startBallX = _position.x * _cellSize + ((_cellSize - _len) / 2);
+            double endBallX = _position.x * _cellSize + ((_cellSize - _len) / 2 * 3);
+            double startBallY = _position.y * _cellSize + ((_cellSize - _len) / 2);
+            double endBallY = _position.y * _cellSize + ((_cellSize - _len) / 2 * 3);
+
+            if (startBallX >= startX && endBallX <= endX && startBallY >= startY && endBallY <= endY)
             {
                 return true;
             }

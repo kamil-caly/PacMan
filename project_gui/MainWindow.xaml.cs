@@ -18,33 +18,45 @@ namespace project_gui
         private const int _rows = 21;
         private const int _cols = 19;
         private const int _cellSize = 40;
-        private readonly int[,] board = GameTools._boardPattern;
-        private readonly Pacman _packman;
-        private readonly Image _packmanImg;
+        private const int _bigBallLen = 30;
+        private const int _smallBallLen = 24;
+        private const int _characterLen = 38;
+        private int[,] board = GameTools._boardPattern;
+        private Pacman _packman;
+        private Image _packmanImg;
         private bool _isRunning;
         private int _gameSpeed = 5;
-        private readonly BallsManager _ballsMng;
+        private BallsManager _ballsMng;
         private List<Image> _bigBallsImgs;
+        private List<Image> _smallBallsImgs;
 
         public MainWindow()
         {
             InitializeComponent();
-            DrawBoard();
-            _ballsMng = new(_cellSize);
-            _bigBallsImgs = new();
-            DrawBalls();
-            SetStartTxtVisible();
             _isRunning = false;
+            SetStartTxtVisible();
+            RestartGame();
+        }
+
+        private void RestartGame()
+        {
+            gameCanvas.Children.Clear();
+            DrawBoard();
+            _ballsMng = new(_cellSize, _bigBallLen, _smallBallLen);
+            _bigBallsImgs = new();
+            _smallBallsImgs = new();
+            DrawBalls();
             _packman = new Pacman(_cellSize);
 
             // packman img
             _packmanImg = new Image();
             _packmanImg.Source = AssetsLoader.GetNextPackmanImg(_packman.direction);
-            _packmanImg.Width = _cellSize - 2;
-            _packmanImg.Height = _cellSize - 2;
+            _packmanImg.Width = _characterLen;
+            _packmanImg.Height = _characterLen;
             DrawPacmanImg(_packmanImg, _packman.position);
             gameCanvas.Children.Add(_packmanImg);
 
+            UpdateScore();
             Draw();
         }
 
@@ -55,7 +67,8 @@ namespace project_gui
             {
                 _isRunning = true;
                 SetStartTxtVisible(false);
-                await GameLoop();
+                await PacmanLoop();
+                return;
             }
 
             switch (e.Key)
@@ -72,16 +85,19 @@ namespace project_gui
                 case Key.Down:
                     _packman.nextDirection = Direction.Down;
                     break;
+                case Key.R:
+                    RestartGame();
+                    break;
                 default:
                     break;
             }
         }
 
-        private async Task GameLoop()
+        private async Task PacmanLoop()
         {
-            while (true) 
+            while (_isRunning) 
             {
-                await Task.Delay(_gameSpeed); // 2000
+                await Task.Delay(_packman.speed); // 2000
                 _packman.TryChangeDirection();
                 if (_packman.CanMove())
                 {
@@ -90,9 +106,49 @@ namespace project_gui
                     {
                         _packmanImg.Source = AssetsLoader.GetNextPackmanImg(_packman.direction);
                     }
+
+                    TryEatBigBall();
+                    TryEatSmallBall();
+                    UpdateScore();
                 }
                 Draw();
             }
+        }
+
+        private void TryEatBigBall()
+        {
+            var eatedBigBall = _ballsMng._bigBalls.FirstOrDefault(b => b.CanRemoveBall(_packman.position));
+            if (eatedBigBall is not null)
+            {
+                _ballsMng.RemoveBall(eatedBigBall);
+                var bigBallImg = _bigBallsImgs.FirstOrDefault(i => i.DataContext.ToString()!.Split(" ")[0] == eatedBigBall._position.x.ToString()
+                    && i.DataContext.ToString()!.Split(" ")[1] == eatedBigBall._position.y.ToString());
+                _bigBallsImgs.Remove(bigBallImg!);
+                gameCanvas.Children.Remove(bigBallImg);
+
+                _packman.UpdatePoints(ScoreType.BigBall);
+            }
+        }
+
+        private void TryEatSmallBall()
+        {
+            var eatedSmallBall = _ballsMng._smallBalls.FirstOrDefault(b => b.CanRemoveBall(_packman.position));
+            if (eatedSmallBall is not null)
+            {
+                _ballsMng.RemoveBall(eatedSmallBall);
+                var smallBallImg = _smallBallsImgs.FirstOrDefault(i => i.DataContext.ToString()!.Split(" ")[0] == eatedSmallBall._position.x.ToString()
+                    && i.DataContext.ToString()!.Split(" ")[1] == eatedSmallBall._position.y.ToString());
+                _bigBallsImgs.Remove(smallBallImg!);
+                gameCanvas.Children.Remove(smallBallImg);
+
+                _packman.UpdatePoints(ScoreType.SmallBall);
+            }
+        }
+
+        private void UpdateScore()
+        {
+            scoreTextBox.Text = $"SCORE: {_packman.score}";
+            highScoreTextBox.Text = $"HIGH SCORE: {Pacman.highScore}";
         }
 
         private void CreateField(int cornerRadius, int row, int col, bool isPath)
@@ -211,17 +267,34 @@ namespace project_gui
 
         private void DrawBalls()
         {
+            // big balls
             foreach (var bigBall in _ballsMng._bigBalls)
             {
                 var bigBallImg = new Image();
                 bigBallImg.Source = AssetsLoader.GetBigBallImg();
-                bigBallImg.Width = 30;
-                bigBallImg.Height = 30;
-                var newPos = new project_logic.Point(bigBall._position.x * _cellSize, bigBall._position.y * _cellSize);
+                bigBallImg.Width = _bigBallLen;
+                bigBallImg.Height = _bigBallLen;
+                bigBallImg.DataContext = bigBall._position.x.ToString() + " " + bigBall._position.y.ToString();
+                var newPos = new project_logic.PointD(bigBall._position.x * _cellSize, bigBall._position.y * _cellSize);
                 DrawBigBallImg(bigBallImg, newPos);
 
                 gameCanvas.Children.Add(bigBallImg);
                 _bigBallsImgs.Add(bigBallImg);
+            }
+
+            // small balls
+            foreach (var smallBall in _ballsMng._smallBalls)
+            {
+                var smallBallImg = new Image();
+                smallBallImg.Source = AssetsLoader.GetSmallBallImg();
+                smallBallImg.Width = _smallBallLen;
+                smallBallImg.Height = _smallBallLen;
+                smallBallImg.DataContext = smallBall._position.x.ToString() + " " + smallBall._position.y.ToString();
+                var newPos = new project_logic.PointD(smallBall._position.x * _cellSize, smallBall._position.y * _cellSize);
+                DrawSmallBallImg(smallBallImg, newPos);
+
+                gameCanvas.Children.Add(smallBallImg);
+                _smallBallsImgs.Add(smallBallImg);
             }
         }
 
@@ -232,14 +305,20 @@ namespace project_gui
 
         private void DrawPacmanImg(Image img, project_logic.Point point)
         {
-            Canvas.SetLeft(img, point.x + 1);
-            Canvas.SetTop(img, point.y + 1);
+            Canvas.SetLeft(img, point.x + ((_cellSize - _characterLen) / 2));
+            Canvas.SetTop(img, point.y + ((_cellSize - _characterLen) / 2));
         }
 
-        private void DrawBigBallImg(Image img, project_logic.Point point)
+        private void DrawBigBallImg(Image img, PointD point)
         {
-            Canvas.SetLeft(img, point.x + 5);
-            Canvas.SetTop(img, point.y + 5);
+            Canvas.SetLeft(img, point.x + ((_cellSize - _bigBallLen) / 2));
+            Canvas.SetTop(img, point.y + ((_cellSize - _bigBallLen) / 2));
+        }
+
+        private void DrawSmallBallImg(Image img, PointD point)
+        {
+            Canvas.SetLeft(img, point.x + ((_cellSize - _smallBallLen) / 2));
+            Canvas.SetTop(img, point.y + ((_cellSize - _smallBallLen) / 2));
         }
 
         private void Draw()

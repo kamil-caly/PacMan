@@ -26,6 +26,11 @@ namespace project_gui
             return new BitmapImage(new Uri($"assets/Block 2.png", UriKind.Relative));
         }
 
+        public static ImageSource GetSmallBallImg()
+        {
+            return new BitmapImage(new Uri($"assets/Block 1.png", UriKind.Relative));
+        }
+
         public static ImageSource GetNextPackmanImg(Direction dir)
         {
             _packmanPhaze++;
