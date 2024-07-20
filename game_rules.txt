@@ -1,5 +1,5 @@
 Sterowanie: 
-  - Pac-Man porusza się w czterech kierunkach (góra, dół, lewo, prawo) w labiryncie.
+  - Pac-Man porusza się w czterech kierunkach (góra, dół, lewo, prawo) w labiryncie. ✔
   
 Małe kropki: 
   - Pac-Man zdobywa punkty za zjedzenie małych kropek rozmieszczonych w labiryncie -> 10pkt/kropka.
@@ -24,7 +24,7 @@ Duchy:
   - Utrata życia następuję w momencie dotknięcia ducha.
   
 Labirynt:
-  - Istnieją specjalne tunele, które pozwalają Pac-Manowi przemieszczać się z jednej strony labiryntu na drugą.
+  - Istnieją specjalne tunele, które pozwalają Pac-Manowi przemieszczać się z jednej strony labiryntu na drugą ✔
   
 Zasady zwycięstwa i przegranej:
   - Gracz wygrywa poziom, gdy zbierze wszystkie kropki w labiryncie.

@@ -1,4 +1,5 @@
 ﻿using project_logic;
+using project_logic.Balls;
 using project_logic.characters;
 using System.Windows;
 using System.Windows.Controls;
@@ -22,11 +23,16 @@ namespace project_gui
         private readonly Image _packmanImg;
         private bool _isRunning;
         private int _gameSpeed = 5;
+        private readonly BallsManager _ballsMng;
+        private List<Image> _bigBallsImgs;
 
         public MainWindow()
         {
             InitializeComponent();
             DrawBoard();
+            _ballsMng = new(_cellSize);
+            _bigBallsImgs = new();
+            DrawBalls();
             SetStartTxtVisible();
             _isRunning = false;
             _packman = new Pacman(_cellSize);
@@ -36,7 +42,7 @@ namespace project_gui
             _packmanImg.Source = AssetsLoader.GetNextPackmanImg(_packman.direction);
             _packmanImg.Width = _cellSize - 2;
             _packmanImg.Height = _cellSize - 2;
-            DrawImg(_packmanImg, _packman.position);
+            DrawPacmanImg(_packmanImg, _packman.position);
             gameCanvas.Children.Add(_packmanImg);
 
             Draw();
@@ -203,20 +209,42 @@ namespace project_gui
             }
         }
 
+        private void DrawBalls()
+        {
+            foreach (var bigBall in _ballsMng._bigBalls)
+            {
+                var bigBallImg = new Image();
+                bigBallImg.Source = AssetsLoader.GetBigBallImg();
+                bigBallImg.Width = 30;
+                bigBallImg.Height = 30;
+                var newPos = new project_logic.Point(bigBall._position.x * _cellSize, bigBall._position.y * _cellSize);
+                DrawBigBallImg(bigBallImg, newPos);
+
+                gameCanvas.Children.Add(bigBallImg);
+                _bigBallsImgs.Add(bigBallImg);
+            }
+        }
+
         private void SetStartTxtVisible(bool isVisible = true)
         {
             StartTextBox.Visibility = isVisible ? Visibility.Visible : Visibility.Hidden;
         }
 
-        private void DrawImg(Image img, project_logic.Point point)
+        private void DrawPacmanImg(Image img, project_logic.Point point)
         {
             Canvas.SetLeft(img, point.x + 1);
             Canvas.SetTop(img, point.y + 1);
         }
 
+        private void DrawBigBallImg(Image img, project_logic.Point point)
+        {
+            Canvas.SetLeft(img, point.x + 5);
+            Canvas.SetTop(img, point.y + 5);
+        }
+
         private void Draw()
         {
-            DrawImg(_packmanImg, _packman.position);
+            DrawPacmanImg(_packmanImg, _packman.position);
         }
     }
 }

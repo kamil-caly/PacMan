@@ -1,2 +1,3 @@
-1) Rysowanie planszy.
-2) Rysowanie i ruch Packman'a.
+1) Rysowanie planszy. ✔
+2) Rysowanie i ruch Packman'a. ✔
+3) Rysowanie kropek (małe + duże).

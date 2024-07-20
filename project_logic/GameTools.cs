@@ -2,6 +2,7 @@
 {
     public static class GameTools
     {
+        // rows: 21, cols: 19
         public static readonly int[,] _boardPattern =
         {
             { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
