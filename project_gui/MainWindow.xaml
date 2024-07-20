@@ -6,7 +6,8 @@
         xmlns:local="clr-namespace:project_gui"
         mc:Ignorable="d"
         Title="MainWindow" Height="1000" Width="800"
-        Icon="assets/Pacman.ico">
+        Icon="assets/Pacman.ico"
+        KeyDown="Window_KeyDown">
     <Grid Name="MainGrid" Background="Black">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -34,6 +35,19 @@
                      Margin="90 30 0 30"/>
         </StackPanel>
 
-        <Canvas x:Name="gameCanvas" Grid.Row="1" Background="Black"></Canvas>
+        <Canvas x:Name="gameCanvas" Grid.Row="1" Background="Black">
+        </Canvas>
+
+        <TextBox x:Name="StartTextBox" 
+            Background="Transparent"
+            Foreground="White"
+            Text="Press any key to start..."
+            IsReadOnly="True"
+            FontFamily="Arial Black"
+            FontSize="32"
+            VerticalContentAlignment="Center"
+            HorizontalContentAlignment="Center"
+            BorderThickness="0"
+            Grid.Row="1"/>
     </Grid>
 </Window>

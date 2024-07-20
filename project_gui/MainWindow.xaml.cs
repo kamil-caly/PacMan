@@ -1,6 +1,8 @@
 ﻿using project_logic;
+using project_logic.characters;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
@@ -16,29 +18,78 @@ namespace project_gui
         private const int _cols = 19;
         private const int _cellSize = 40;
         private readonly int[,] board = GameTools._boardPattern;
-        private readonly GameState _gameState;
+        private readonly Pacman _packman;
+        private readonly Image _packmanImg;
+        private bool _isRunning;
+        private int _gameSpeed = 7;
 
         public MainWindow()
         {
             InitializeComponent();
-            CreateBoard();
-            _gameState = new GameState(_cellSize);
-            var test = _gameState.CanMove(Direction.Up, new project_logic.Point(150, 110));
+            DrawBoard();
+            SetStartTxtVisible();
+            _isRunning = false;
+            _packman = new Pacman(_cellSize);
 
-            // test
-            string imagePath = "assets/Ghost 1 3.png";
-            Image img = new Image();
-            img.Source = new BitmapImage(new Uri(imagePath, UriKind.Relative));
-            img.Width = _cellSize - 2;
-            img.Height = _cellSize - 2;
-           
-            Canvas.SetLeft(img, 10 + 1); 
-            Canvas.SetTop(img, 10 + 1); 
+            // packman img
+            _packmanImg = new Image();
+            _packmanImg.Source = AssetsLoader.GetNextPackmanImg(_packman.direction);
+            _packmanImg.Width = _cellSize - 2;
+            _packmanImg.Height = _cellSize - 2;
+            DrawImg(_packmanImg, _packman.position);
+            gameCanvas.Children.Add(_packmanImg);
 
-            gameCanvas.Children.Add(img);
+            Draw();
         }
 
-        private void DrawField(int cornerRadius, int row, int col, bool isPath)
+        private async void Window_KeyDown(object sender, KeyEventArgs e)
+        {
+            // start game loop
+            if (!_isRunning)
+            {
+                _isRunning = true;
+                SetStartTxtVisible(false);
+                await GameLoop();
+            }
+
+            switch (e.Key)
+            {
+                case Key.Right:
+                    _packman.nextDirection = Direction.Right;
+                    break;
+                case Key.Left:
+                    _packman.nextDirection = Direction.Left;
+                    break;
+                case Key.Up:
+                    _packman.nextDirection = Direction.Up;
+                    break;
+                case Key.Down:
+                    _packman.nextDirection = Direction.Down;
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private async Task GameLoop()
+        {
+            while (true) 
+            {
+                await Task.Delay(_gameSpeed); // 2000
+                _packman.TryChangeDirection();
+                if (_packman.CanMove())
+                {
+                    _packman.Move();
+                    if (_packman.steps <= 0)
+                    {
+                        _packmanImg.Source = AssetsLoader.GetNextPackmanImg(_packman.direction);
+                    }
+                }
+                Draw();
+            }
+        }
+
+        private void CreateField(int cornerRadius, int row, int col, bool isPath)
         {
             Rectangle rect = new Rectangle
             {
@@ -127,7 +178,7 @@ namespace project_gui
             gameCanvas.Children.Add(path);
         }
 
-        private void CreateBoard()
+        private void DrawBoard()
         {
             int cornerRadius = 10;
 
@@ -141,15 +192,31 @@ namespace project_gui
                     // block
                     if (GameTools._boardPattern[row, col] == 1)
                     {
-                        DrawField(cornerRadius, row, col, false);
+                        CreateField(cornerRadius, row, col, false);
                     }
                     // path
                     else
                     {
-                        DrawField(cornerRadius, row, col, true);
+                        CreateField(cornerRadius, row, col, true);
                     }
                 }
             }
+        }
+
+        private void SetStartTxtVisible(bool isVisible = true)
+        {
+            StartTextBox.Visibility = isVisible ? Visibility.Visible : Visibility.Hidden;
+        }
+
+        private void DrawImg(Image img, project_logic.Point point)
+        {
+            Canvas.SetLeft(img, point.x + 1);
+            Canvas.SetTop(img, point.y + 1);
+        }
+
+        private void Draw()
+        {
+            DrawImg(_packmanImg, _packman.position);
         }
     }
 }

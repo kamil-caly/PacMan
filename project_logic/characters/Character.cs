@@ -4,66 +4,96 @@
     {
         public int cellSize { get; set; }
         private int[,] board = GameTools._boardPattern;
+        public Point position { get; set; } = default!;
+        public int speed { get; set; }
+        public Direction direction { get; set; }
+        public Direction nextDirection { get; set; }
 
         public Character(int cellSize)
         {
             this.cellSize = cellSize;
         }
 
-        public bool CanMove(Direction dir, Point pos)
+        public bool CanMove()
         {
-            int newY = 0;
-            int newX = 0;
-            int row = 0;
-            int col = 0;
-            switch (dir)
+            double newY = 0;
+            double newX = 0;
+            double row = 0;
+            double col = 0;
+            switch (direction)
             {
                 case Direction.Up:
-                    newY = pos.y - 1;
-                    row = newY / cellSize;
-                    col = pos.x / cellSize;
-                    return board[row, col] == 0;
+                    newY = position.y - 1;
+                    row = Math.Floor(newY / cellSize);
+                    col = (double)position.x / cellSize;
+                    if (col % 1 == 0)
+                    {
+                        return board[(int)row, (int)col] == 0;
+                    }
+                    return false;
                 case Direction.Right:
-                    newX = pos.x + 1;
-                    row = pos.y / cellSize;
-                    col = newX / cellSize;
-                    return board[row, col] == 0;
+                    newX = position.x + 1;
+                    col = (int)Math.Ceiling(newX / cellSize);
+                    row = (double)position.y / cellSize;
+                    if (row % 1 == 0)
+                    {
+                        return board[(int)row, (int)col] == 0;
+                    }
+                    return false;
                 case Direction.Down:
-                    newY = pos.y + 1;
-                    row = newY / cellSize;
-                    col = pos.x / cellSize;
-                    return board[row, col] == 0;
+                    newY = position.y + 1;
+                    row = (int)Math.Ceiling(newY / cellSize);
+                    col = (double)position.x / cellSize;
+                    if (col % 1 == 0)
+                    {
+                        return board[(int)row, (int)col] == 0;
+                    }
+                    return false;
                 case Direction.Left:
-                    newX = pos.x - 1;
-                    row = pos.y / cellSize;
-                    col = newX / cellSize;
-                    return board[row, col] == 0;
+                    newX = position.x - 1;
+                    col = (int)Math.Floor(newX / cellSize);
+                    row = (double)position.y / cellSize;
+                    if (row % 1 == 0)
+                    {
+                        return board[(int)row, (int)col] == 0;
+                    }
+                    return false;
                 default:
                     return false;
             }
         }
 
-        public void Move(Direction dir, Point pos)
+        public void TryChangeDirection()
+        {
+            var prevDir = direction;
+            direction = nextDirection;
+            if (!CanMove())
+            {
+                direction = prevDir;
+            }
+        }
+
+        public virtual void Move()
         {
             int newY = 0;
             int newX = 0;
-            switch (dir)
+            switch (direction)
             {
                 case Direction.Up:
-                    newY = pos.y - 1;
-                    pos.y = newY;
+                    newY = position.y - 1;
+                    position.y = newY;
                     break;
                 case Direction.Right:
-                    newX = pos.x + 1;
-                    pos.x = newX;
+                    newX = position.x + 1;
+                    position.x = newX;
                     break;
                 case Direction.Down:
-                    newY = pos.y + 1;
-                    pos.y = newY;
+                    newY = position.y + 1;
+                    position.y = newY;
                     break;
                 case Direction.Left:
-                    newX = pos.x - 1;
-                    pos.x = newX;
+                    newX = position.x - 1;
+                    position.x = newX;
                     break;
                 default:
                     break;
