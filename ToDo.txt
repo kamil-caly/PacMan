@@ -1,4 +1,4 @@
 1) Rysowanie planszy. ✔
 2) Rysowanie i ruch Packman'a. ✔
-3) Rysowanie kropek (małe + duże).
+3) Rysowanie kropek (małe + duże). ✔
 4) Zjadanie kropek. ✔
