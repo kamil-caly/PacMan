@@ -156,5 +156,10 @@ namespace project_logic.Balls
                 _smallBalls.Remove((SmallBall)ball);
             }
         }
+
+        public bool IsBallsEmpty()
+        {
+            return _bigBalls.Count == 0 && _smallBalls.Count == 0;
+        }
     }
 }

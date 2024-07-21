@@ -25,21 +25,23 @@ namespace project_gui
         private Pacman _packman;
         private Image _packmanImg;
         private bool _isRunning;
+        private bool _isGameOver;
         private int _gameSpeed = 5;
         private BallsManager _ballsMng;
         private List<Image> _bigBallsImgs;
         private List<Image> _smallBallsImgs;
+        private const string _winTxt = "You win!";
 
         public MainWindow()
         {
             InitializeComponent();
             _isRunning = false;
-            SetStartTxtVisible();
             RestartGame();
         }
 
         private void RestartGame()
         {
+            _isGameOver = false;
             gameCanvas.Children.Clear();
             DrawBoard();
             _ballsMng = new(_cellSize, _bigBallLen, _smallBallLen);
@@ -57,18 +59,25 @@ namespace project_gui
             gameCanvas.Children.Add(_packmanImg);
 
             UpdateScore();
+            SetStartTxtVisible();
             Draw();
         }
 
         private async void Window_KeyDown(object sender, KeyEventArgs e)
         {
             // start game loop
-            if (!_isRunning)
+            if (!_isRunning && !_isGameOver)
             {
                 _isRunning = true;
+                _isGameOver = false;
                 SetStartTxtVisible(false);
                 await PacmanLoop();
                 return;
+            }
+
+            if (e.Key != Key.R && StartTextBox.Text != _winTxt)
+            {
+                SetStartTxtVisible(false);
             }
 
             switch (e.Key)
@@ -95,7 +104,7 @@ namespace project_gui
 
         private async Task PacmanLoop()
         {
-            while (_isRunning) 
+            while (_isRunning && !_isGameOver) 
             {
                 await Task.Delay(_packman.speed); // 2000
                 _packman.TryChangeDirection();
@@ -111,7 +120,15 @@ namespace project_gui
                     TryEatSmallBall();
                     UpdateScore();
                 }
+
                 Draw();
+
+                if (_ballsMng.IsBallsEmpty())
+                {
+                    _isGameOver = true;
+                    _isRunning = false;
+                    UpdateGameOverTxt();
+                }
             }
         }
 
@@ -301,6 +318,15 @@ namespace project_gui
         private void SetStartTxtVisible(bool isVisible = true)
         {
             StartTextBox.Visibility = isVisible ? Visibility.Visible : Visibility.Hidden;
+            StartTextBox.Text = "Press any key to start...";
+            StartTextBox.FontSize = 32;
+        }
+
+        private void UpdateGameOverTxt()
+        {
+            StartTextBox.Text = _isGameOver ? _winTxt : "";
+            StartTextBox.FontSize = _isGameOver ? 60 : 32;
+            StartTextBox.Visibility = _isGameOver ? Visibility.Visible : Visibility.Hidden;
         }
 
         private void DrawPacmanImg(Image img, project_logic.Point point)

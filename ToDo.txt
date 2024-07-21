@@ -2,3 +2,4 @@
 2) Rysowanie i ruch Packman'a. ✔
 3) Rysowanie kropek (małe + duże). ✔
 4) Zjadanie kropek. ✔
+5) Koniec gry gdy zjedzone wszystkie kropki. ✔
