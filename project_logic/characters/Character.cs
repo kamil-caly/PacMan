@@ -6,12 +6,25 @@
         private int[,] board = GameTools._boardPattern;
         public Point position { get; set; } = default!;
         public int speed { get; set; }
+        public int counter { get; set; } = 0;
         public Direction direction { get; set; }
         public Direction nextDirection { get; set; }
 
         public Character(int cellSize)
         {
             this.cellSize = cellSize;
+        }
+
+        public bool IsMoveTime()
+        {
+            counter++;
+            if (counter >= speed)
+            {
+                counter = 0;
+                return true;
+            }
+            
+            return false;
         }
 
         public bool CanMove()

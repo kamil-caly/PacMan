@@ -2,7 +2,7 @@ Sterowanie:
   - Pac-Man porusza się w czterech kierunkach (góra, dół, lewo, prawo) w labiryncie. ✔
   
 Małe kropki: 
-  - Pac-Man zdobywa punkty za zjedzenie małych kropek rozmieszczonych w labiryncie -> 10pkt/kropka.
+  - Pac-Man zdobywa punkty za zjedzenie małych kropek rozmieszczonych w labiryncie -> 10pkt/kropka. ✔
 
 Duże kropki: 
   - Po zjedzeniu dużej kropki (50pkt/kropka) Pac-Man zyskuje tymczasową zdolność zjadania duchów. Duchy stają się wtedy niebieskie i uciekają przed Pac-Manem. Za zjedzenie każdego ducha w tym stanie gracz otrzymuje dodatkowe punkty -> 200pkt/duch.
@@ -10,7 +10,7 @@ Duże kropki:
 Duchy:
   - W labiryncie poruszają się cztery duchy: Blinky (czerwony), Pinky (różowy), Inky (niebieski) i Clyde (pomarańczowy).
   Duchy mają różne strategie poruszania się.
-  - Blinky (czerwony duch): Ściga Pac-Mana bezpośrednio (do po przekroczeniu 8 kafelkow), dążąc do jego aktualnej pozycji. Jego prędkość wzrasta, gdy gracz zbiera więcej punktów. 
+  - Blinky (czerwony duch): Ściga Pac-Mana bezpośrednio (w odległości mniejszej lub równej 8 kafelków od Packmana), dążąc do jego aktualnej pozycji. Jego prędkość wzrasta, gdy gracz zbiera więcej punktów. 
   - Pinky (różowy duch): Pinky próbuje przewidzieć ruchy Pac-Mana. Stara się ustawić cztery pola przed Pac-Manem w kierunku, w którym się porusza, tworząc pułapkę. Jeśli Pac-Man porusza się na północ, Pinky dąży do miejsca cztery pola przed nim.
   - Inky (niebieski duch): Inky ma najbardziej złożony algorytm ruchu. Jego cel jest wyznaczany w oparciu o pozycję Blinky'ego i Pac-Mana. W skrócie, cel Inky'ego jest wyznaczony poprzez znalezienie punktu, który jest odzwierciedleniem odległości między Pac-Manem a Blinky'm. To sprawia, że jego ruchy są bardziej nieprzewidywalne.
   - Clyde (pomarańczowy duch): Clyde porusza się w dość nietypowy sposób. Gdy jest daleko od Pac-Mana, dąży w jego kierunku, ale gdy zbliży się na odległość ośmiu pól, zmienia kierunek i zaczyna poruszać się w losowych kierunkach.
@@ -27,6 +27,6 @@ Labirynt:
   - Istnieją specjalne tunele, które pozwalają Pac-Manowi przemieszczać się z jednej strony labiryntu na drugą ✔
   
 Zasady zwycięstwa i przegranej:
-  - Gracz wygrywa poziom, gdy zbierze wszystkie kropki w labiryncie.
+  - Gracz wygrywa poziom, gdy zbierze wszystkie kropki w labiryncie. ✔
   - Poziom kończy się przegraną, jeśli gracz straci wszystkie życia przed zebraniem wszystkich kropek.
 

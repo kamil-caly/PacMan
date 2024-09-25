@@ -3,3 +3,4 @@
 3) Rysowanie kropek (małe + duże). ✔
 4) Zjadanie kropek. ✔
 5) Koniec gry gdy zjedzone wszystkie kropki. ✔
+6) Poruszanie się ducha: Blinky (czerwony) -> zgodnie z algorytmem.

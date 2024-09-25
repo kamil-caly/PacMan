@@ -26,7 +26,7 @@ namespace project_gui
         private Image _packmanImg;
         private bool _isRunning;
         private bool _isGameOver;
-        private int _gameSpeed = 5;
+        private const int _gameSpeed = 1;
         private BallsManager _ballsMng;
         private List<Image> _bigBallsImgs;
         private List<Image> _smallBallsImgs;
@@ -106,9 +106,9 @@ namespace project_gui
         {
             while (_isRunning && !_isGameOver) 
             {
-                await Task.Delay(_packman.speed); // 2000
+                await Task.Delay(_gameSpeed); 
                 _packman.TryChangeDirection();
-                if (_packman.CanMove())
+                if (_packman.IsMoveTime() && _packman.CanMove())
                 {
                     _packman.Move();
                     if (_packman.steps <= 0)
