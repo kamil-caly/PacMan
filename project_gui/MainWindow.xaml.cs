@@ -37,13 +37,13 @@ namespace project_gui
         public MainWindow()
         {
             InitializeComponent();
-            _isRunning = false;
             RestartGame();
         }
 
         private void RestartGame()
         {
             _isGameOver = false;
+            _isRunning = false;
             gameCanvas.Children.Clear();
             DrawBoard();
 
