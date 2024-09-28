@@ -3,5 +3,7 @@
 3) Rysowanie kropek (małe + duże). ✔
 4) Zjadanie kropek. ✔
 5) Koniec gry gdy zjedzone wszystkie kropki. ✔
-6) Poruszanie się ducha: Blinky (czerwony) -> zgodnie z algorytmem. ✔
+6) Rysowanie i poruszanie się ducha: Blinky (czerwony) -> zgodnie z algorytmem. ✔
 7) Pacman nie może wchodzić do domu duchów. ✔
+8) Wyświetlanie żyć gracza. ✔
+9) Rysowanie i poruszanie się ducha: Pinky (różowy) -> zgodnie z algorytmem.

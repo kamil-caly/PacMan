@@ -2,13 +2,14 @@
 {
     public class Pacman : Character
     {
-        public int healf { get; set; }
+        public int life { get; set; }
         public int score { get; set; }
-        public static int highScore { get; set; }   
+        public static int highScore { get; set; }
+        public Direction nextDirection { get; set; }
 
         public Pacman(int cellSize) : base(cellSize)
         {
-            healf = 3;
+            life = 3;
             score = 0;
             speed = 5;
             position = new Point(9 * cellSize, 11 * cellSize);
@@ -16,7 +17,7 @@
             nextDirection = direction;
         }
 
-        public override void TryChangeDirection()
+        public void TryChangeDirection()
         {
             var prevDir = direction;
             direction = nextDirection;

@@ -18,7 +18,14 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
+
+            <StackPanel x:Name="LifePanel" Orientation="Horizontal" HorizontalAlignment="Left" Grid.Column="0">
+                <Image Source="assets/Pacman 2 1.png" Width="30" Height="30" Margin="5"/>
+                <Image Source="assets/Pacman 2 1.png" Width="30" Height="30" Margin="5"/>
+                <Image Source="assets/Pacman 2 1.png" Width="30" Height="30" Margin="5"/>
+            </StackPanel>
 
             <TextBox x:Name="scoreTextBox" 
                  Text="SCORE: 0" 
@@ -26,11 +33,11 @@
                  Foreground="White" 
                  Background="Black" 
                  BorderBrush="Black" 
-                 FontSize="30" 
+                 FontSize="20" 
                  IsReadOnly="True"
                  Padding="0 20"
                  HorizontalAlignment="Left"
-                 Grid.Column="0"/>
+                 Grid.Column="1"/>
 
             <TextBox x:Name="highScoreTextBox" 
                  Text="HIGH SCORE: 0" 
@@ -38,11 +45,11 @@
                  Foreground="White" 
                  Background="Black" 
                  BorderBrush="Black" 
-                 FontSize="30" 
+                 FontSize="20" 
                  IsReadOnly="True"
                  Padding="0 20"
                  HorizontalAlignment="Left"
-                 Grid.Column="1"/>
+                 Grid.Column="2"/>
         </Grid>
 
         <Canvas x:Name="gameCanvas" Grid.Row="1" Background="Black">

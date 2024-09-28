@@ -1,12 +1,12 @@
 ﻿namespace project_logic.characters
 {
-    public class Blinky : Ghost
+    public class Pinky : Ghost
     {
-        public Blinky(int cellSize, Pacman pacman) : base(cellSize, pacman)
+        public Pinky(int cellSize, Pacman pacman) : base(cellSize, pacman)
         {
             steps = 0;
             speed = 6;
-            position = new Point(10 * cellSize, 9 * cellSize);
+            position = new Point(8 * cellSize, 9 * cellSize);
 
             while (true)
             {
@@ -26,10 +26,10 @@
 
             int pX = pacman.position.x + (cellSize / 2);
             int pY = pacman.position.y + (cellSize / 2);
-            int bX = this.position.x + (cellSize / 2);
-            int bY = this.position.y + (cellSize / 2);
+            int ppX = this.position.x + (cellSize / 2);
+            int ppY = this.position.y + (cellSize / 2);
 
-            int packmanBlinkyDistance = (int)Math.Sqrt(Math.Pow(pX - bX, 2) + Math.Pow(pY - bY, 2));
+            int packmanBlinkyDistance = (int)Math.Sqrt(Math.Pow(pX - ppX, 2) + Math.Pow(pY - ppY, 2));
 
             // algorytm działa tylko w odległości 8 kratek i mniejszej
             if (packmanBlinkyDistance > criticalDistance)
@@ -39,10 +39,28 @@
                 return dirs.OrderBy(x => random.Next()).ToList();
             }
 
-            // pacmam jest na południowy-wschód od Blinky
-            if (pX > bX && pY > bY)
+            switch (pacman.direction)
             {
-                if (pX - bX > pY - bY)
+                case Direction.Left:
+                    pX -= 4 * cellSize;
+                    break;
+                case Direction.Right:
+                    pX += 4 * cellSize;
+                    break;
+                case Direction.Up:
+                    pY -= 4 * cellSize;
+                    break;
+                case Direction.Down:
+                    pY += 4 * cellSize;
+                    break;
+                default:
+                    break;
+            }
+
+            // pole przed pacman'em jest na południowy-wschód od Pinky
+            if (pX > ppX && pY > ppY)
+            {
+                if (pX - ppX > pY - ppY)
                 {
                     dirs.Add(Direction.Right);
                     dirs.Add(Direction.Down);
@@ -68,10 +86,10 @@
                 return dirs;
             }
 
-            // pacmam jest na południowy-zachód od Blinky
-            if (pX < bX && pY > bY)
+            // pole przed pacman'em jest na południowy-zachód od Pinky
+            if (pX < ppX && pY > ppY)
             {
-                if (bX - pX > pY - bY)
+                if (ppX - pX > pY - ppY)
                 {
                     dirs.Add(Direction.Left);
                     dirs.Add(Direction.Down);
@@ -97,10 +115,10 @@
                 return dirs;
             }
 
-            // pacmam jest na północny-zachód od Blinky
-            if (pX > bX && pY < bY)
+            // pole przed pacman'em jest na północny-zachód od Pinky
+            if (pX > ppX && pY < ppY)
             {
-                if (pX - bX > bY - pY)
+                if (pX - ppX > ppY - pY)
                 {
                     dirs.Add(Direction.Right);
                     dirs.Add(Direction.Up);
@@ -126,10 +144,10 @@
                 return dirs;
             }
 
-            // pacmam jest na północny-wschód od Blinky
-            if (pX < bX && pY < bY)
+            // pole przed pacman'em jest na północny-wschód od Pinky
+            if (pX < ppX && pY < ppY)
             {
-                if (bX - pX > bY - pY)
+                if (ppX - pX > ppY - pY)
                 {
                     dirs.Add(Direction.Left);
                     dirs.Add(Direction.Up);
@@ -155,8 +173,8 @@
                 return dirs;
             }
 
-            // packman jest na południe od Blinky
-            if (pX == bX && pY > bY)
+            // pole przed pacman'em jest na południe od Pinky
+            if (pX == ppX && pY > ppY)
             {
                 dirs.Add(Direction.Down);
                 var tmpDirs = Enum.GetValues(typeof(Direction)).Cast<Direction>().ToList();
@@ -167,8 +185,8 @@
                 return dirs;
             }
 
-            // packman jest na północ od Blinky
-            if (pX == bX && pY < bY)
+            // pole przed pacman'em jest na północ od Pinky
+            if (pX == ppX && pY < ppY)
             {
                 dirs.Add(Direction.Up);
                 var tmpDirs = Enum.GetValues(typeof(Direction)).Cast<Direction>().ToList();
@@ -179,8 +197,8 @@
                 return dirs;
             }
 
-            // packman jest na zachód od Blinky
-            if (pX < bX && pY == bY)
+            // pole przed pacman'em jest na zachód od Pinky
+            if (pX < ppX && pY == ppY)
             {
                 dirs.Add(Direction.Left);
                 var tmpDirs = Enum.GetValues(typeof(Direction)).Cast<Direction>().ToList();
@@ -191,8 +209,8 @@
                 return dirs;
             }
 
-            // packman jest na wschód od Blinky
-            if (pX > bX && pY == bY)
+            // pole przed pacman'em jest na wschód od Pinky
+            if (pX > ppX && pY == ppY)
             {
                 dirs.Add(Direction.Right);
                 var tmpDirs = Enum.GetValues(typeof(Direction)).Cast<Direction>().ToList();

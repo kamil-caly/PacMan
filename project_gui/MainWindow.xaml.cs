@@ -23,9 +23,11 @@ namespace project_gui
         private const int _characterLen = 38;
         private int[,] board = GameTools._boardPattern;
         private Pacman _packman;
-        private Blinky _blinky;
+        private Ghost _blinky;
+        private Ghost _pinky;
         private Image _packmanImg;
         private Image _blinkyImg;
+        private Image _pinkyImg;
         private bool _isRunning;
         private bool _isGameOver;
         private const int _gameSpeed = 1;
@@ -46,20 +48,31 @@ namespace project_gui
             _isGameOver = false;
             gameCanvas.Children.Clear();
             DrawBoard();
+
             _ballsMng = new(_cellSize, _bigBallLen, _smallBallLen);
             _bigBallsImgs = new();
             _smallBallsImgs = new();
             DrawBalls();
+
             _packman = new Pacman(_cellSize);
             _blinky = new Blinky(_cellSize, _packman);
+            _pinky = new Pinky(_cellSize, _packman);
 
             // blinky img
             _blinkyImg = new Image();
-            _blinkyImg.Source = AssetsLoader.GetNextGostImg(_blinky.direction, Ghost.Blinky);
+            _blinkyImg.Source = AssetsLoader.GetNextGostImg(_blinky.direction, GhostKind.Blinky);
             _blinkyImg.Width = _characterLen;
             _blinkyImg.Height = _characterLen;
             DrawCharacterImg(_blinkyImg, _blinky.position);
             gameCanvas.Children.Add(_blinkyImg);
+
+            // pinky img
+            _pinkyImg = new Image();
+            _pinkyImg.Source = AssetsLoader.GetNextGostImg(_pinky.direction, GhostKind.Pinky);
+            _pinkyImg.Width = _characterLen;
+            _pinkyImg.Height = _characterLen;
+            DrawCharacterImg(_pinkyImg, _pinky.position);
+            gameCanvas.Children.Add(_pinkyImg);
 
             // packman img
             _packmanImg = new Image();
@@ -142,8 +155,20 @@ namespace project_gui
                         _blinky.ChangeGhostDirection();
                     }
                     
-                    _blinkyImg.Source = AssetsLoader.GetNextGostImg(_blinky.direction, Ghost.Blinky);
+                    _blinkyImg.Source = AssetsLoader.GetNextGostImg(_blinky.direction, GhostKind.Blinky);
                     _blinky.Move();
+                }
+
+                // ruch Pinky
+                if (_pinky.IsMoveTime())
+                {
+                    if (_pinky.IsChangeDirectionPossible())
+                    {
+                        _pinky.ChangeGhostDirection();
+                    }
+
+                    _pinkyImg.Source = AssetsLoader.GetNextGostImg(_pinky.direction, GhostKind.Pinky);
+                    _pinky.Move();
                 }
 
                 Draw();
@@ -376,6 +401,7 @@ namespace project_gui
         {
             DrawCharacterImg(_packmanImg, _packman.position);
             DrawCharacterImg(_blinkyImg, _blinky.position);
+            DrawCharacterImg(_pinkyImg, _pinky.position);
         }
     }
 }

@@ -57,7 +57,7 @@ namespace project_gui
             return GetPackmanImg();
         }
 
-        public static ImageSource GetNextGostImg(Direction dir, Ghost ghost)
+        public static ImageSource GetNextGostImg(Direction dir, GhostKind ghost)
         {
             return new BitmapImage(new Uri($"assets/Ghost {(int)ghost} {(int)dir + 1}.png", UriKind.Relative));
         }

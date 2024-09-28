@@ -8,9 +8,8 @@
         public int speed { get; set; }
         public int counter { get; set; } = 0;
         public Direction direction { get; set; }
-        public Direction nextDirection { get; set; }
         public int steps { get; set; } = 0;
-        protected Random random = new Random();
+        protected Random random { get; private set; } = new Random();
 
         public Character(int cellSize)
         {
@@ -26,38 +25,6 @@
                 return true;
             }
             
-            return false;
-        }
-
-        public bool IsChangeDirectionPossible()
-        {
-            double x = (double)position.x / cellSize;
-            double y = (double)position.y / cellSize;
-
-            if (x == Math.Floor(x) && y == Math.Floor(y))
-            {
-                if ((position.x == 320 || position.x == 360 || position.x == 400) && position.y == 360)
-                {
-                    return true;
-                }
-
-                int possibleDirs = 0;
-                if (CanMove(Direction.Up)) possibleDirs++;
-                if (CanMove(Direction.Right)) possibleDirs++;
-                if (CanMove(Direction.Down)) possibleDirs++;
-                if (CanMove(Direction.Left)) possibleDirs++;
-
-                if (possibleDirs >= 3)
-                {
-                    return true;
-                }
-
-                return (CanMove(Direction.Up) && CanMove(Direction.Right))
-                    || CanMove(Direction.Right) && CanMove(Direction.Down)
-                    || CanMove(Direction.Down) && CanMove(Direction.Left)
-                    || CanMove(Direction.Left) && CanMove(Direction.Up);
-            }
-
             return false;
         }
 
@@ -123,11 +90,6 @@
                 default:
                     return false;
             }
-        }
-
-        public virtual void TryChangeDirection()
-        {
-            
         }
 
         public virtual void Move()
