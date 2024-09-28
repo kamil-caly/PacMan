@@ -3,6 +3,7 @@
     public abstract class Ghost : Character
     {
         protected Pacman pacman { get; set; }
+        public GhostKind kind { get; set; }
         public Ghost(int cellSize, Pacman pacman) : base(cellSize)
         {
             this.pacman = pacman;

@@ -23,11 +23,9 @@ namespace project_gui
         private const int _characterLen = 38;
         private int[,] board = GameTools._boardPattern;
         private Pacman _packman;
-        private Ghost _blinky;
-        private Ghost _pinky;
+        List<Ghost> _ghosts;
         private Image _packmanImg;
-        private Image _blinkyImg;
-        private Image _pinkyImg;
+        Dictionary<GhostKind, Image> _ghostsImg;
         private bool _isRunning;
         private bool _isGameOver;
         private const int _gameSpeed = 1;
@@ -55,24 +53,23 @@ namespace project_gui
             DrawBalls();
 
             _packman = new Pacman(_cellSize);
-            _blinky = new Blinky(_cellSize, _packman);
-            _pinky = new Pinky(_cellSize, _packman);
+            _ghosts = new List<Ghost>() 
+            {
+                new Blinky(_cellSize, _packman),
+                new Pinky(_cellSize, _packman)
+            };
 
-            // blinky img
-            _blinkyImg = new Image();
-            _blinkyImg.Source = AssetsLoader.GetNextGostImg(_blinky.direction, GhostKind.Blinky);
-            _blinkyImg.Width = _characterLen;
-            _blinkyImg.Height = _characterLen;
-            DrawCharacterImg(_blinkyImg, _blinky.position);
-            gameCanvas.Children.Add(_blinkyImg);
+            _ghostsImg = new Dictionary<GhostKind, Image>();
 
-            // pinky img
-            _pinkyImg = new Image();
-            _pinkyImg.Source = AssetsLoader.GetNextGostImg(_pinky.direction, GhostKind.Pinky);
-            _pinkyImg.Width = _characterLen;
-            _pinkyImg.Height = _characterLen;
-            DrawCharacterImg(_pinkyImg, _pinky.position);
-            gameCanvas.Children.Add(_pinkyImg);
+            foreach (var ghost in _ghosts)
+            {
+                _ghostsImg.Add(ghost.kind, new Image());
+                _ghostsImg[ghost.kind].Source = AssetsLoader.GetNextGostImg(ghost.direction, ghost.kind);
+                _ghostsImg[ghost.kind].Width = _characterLen;
+                _ghostsImg[ghost.kind].Height = _characterLen;
+                DrawCharacterImg(_ghostsImg[ghost.kind], ghost.position);
+                gameCanvas.Children.Add(_ghostsImg[ghost.kind]);
+            }
 
             // packman img
             _packmanImg = new Image();
@@ -146,29 +143,20 @@ namespace project_gui
                     TryEatSmallBall();
                     UpdateScore();
                 }
-                
-                // ruch Blinky
-                if (_blinky.IsMoveTime())
-                {
-                    if (_blinky.IsChangeDirectionPossible())
-                    {
-                        _blinky.ChangeGhostDirection();
-                    }
-                    
-                    _blinkyImg.Source = AssetsLoader.GetNextGostImg(_blinky.direction, GhostKind.Blinky);
-                    _blinky.Move();
-                }
 
-                // ruch Pinky
-                if (_pinky.IsMoveTime())
+                // ruch duchów
+                foreach (var ghost in _ghosts)
                 {
-                    if (_pinky.IsChangeDirectionPossible())
+                    if (ghost.IsMoveTime())
                     {
-                        _pinky.ChangeGhostDirection();
-                    }
+                        if (ghost.IsChangeDirectionPossible())
+                        {
+                            ghost.ChangeGhostDirection();
+                        }
 
-                    _pinkyImg.Source = AssetsLoader.GetNextGostImg(_pinky.direction, GhostKind.Pinky);
-                    _pinky.Move();
+                        _ghostsImg[ghost.kind].Source = AssetsLoader.GetNextGostImg(ghost.direction, ghost.kind);
+                        ghost.Move();
+                    }
                 }
 
                 Draw();
@@ -400,8 +388,16 @@ namespace project_gui
         private void Draw()
         {
             DrawCharacterImg(_packmanImg, _packman.position);
-            DrawCharacterImg(_blinkyImg, _blinky.position);
-            DrawCharacterImg(_pinkyImg, _pinky.position);
+
+            foreach (var ghostImg in _ghostsImg)
+            {
+                DrawCharacterImg(ghostImg.Value, GetGhost(ghostImg.Key).position);
+            }
+        }
+
+        private Ghost GetGhost(GhostKind kind)
+        {
+            return _ghosts.First(g => g.kind == kind);
         }
     }
 }

@@ -6,4 +6,4 @@
 6) Rysowanie i poruszanie się ducha: Blinky (czerwony) -> zgodnie z algorytmem. ✔
 7) Pacman nie może wchodzić do domu duchów. ✔
 8) Wyświetlanie żyć gracza. ✔
-9) Rysowanie i poruszanie się ducha: Pinky (różowy) -> zgodnie z algorytmem.
+9) Rysowanie i poruszanie się ducha: Pinky (różowy) -> zgodnie z algorytmem. ✔

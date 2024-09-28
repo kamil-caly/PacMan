@@ -4,6 +4,7 @@
     {
         public Pinky(int cellSize, Pacman pacman) : base(cellSize, pacman)
         {
+            kind = GhostKind.Pinky;
             steps = 0;
             speed = 6;
             position = new Point(8 * cellSize, 9 * cellSize);

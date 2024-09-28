@@ -4,6 +4,7 @@
     {
         public Blinky(int cellSize, Pacman pacman) : base(cellSize, pacman)
         {
+            kind = GhostKind.Blinky;
             steps = 0;
             speed = 6;
             position = new Point(10 * cellSize, 9 * cellSize);

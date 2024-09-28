@@ -10,11 +10,11 @@
         KeyDown="Window_KeyDown">
     <Grid Name="MainGrid" Background="Black">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
+            <RowDefinition Height="auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <Grid Grid.Row="0" Width="700">
+        <Grid Grid.Row="0" Width="700" Margin="0 20 0 0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />
