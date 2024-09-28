@@ -3,6 +3,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Media;
 using System.Drawing;
 using project_logic;
+using project_logic.characters;
 
 namespace project_gui
 {
@@ -54,6 +55,11 @@ namespace project_gui
             }
 
             return GetPackmanImg();
+        }
+
+        public static ImageSource GetNextGostImg(Direction dir, Ghost ghost)
+        {
+            return new BitmapImage(new Uri($"assets/Ghost {(int)ghost} {(int)dir + 1}.png", UriKind.Relative));
         }
     }
 }

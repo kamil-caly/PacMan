@@ -9,6 +9,8 @@
         public int counter { get; set; } = 0;
         public Direction direction { get; set; }
         public Direction nextDirection { get; set; }
+        public int steps { get; set; } = 0;
+        protected Random random = new Random();
 
         public Character(int cellSize)
         {
@@ -27,13 +29,46 @@
             return false;
         }
 
-        public bool CanMove()
+        public bool IsChangeDirectionPossible()
+        {
+            double x = (double)position.x / cellSize;
+            double y = (double)position.y / cellSize;
+
+            if (x == Math.Floor(x) && y == Math.Floor(y))
+            {
+                if ((position.x == 320 || position.x == 360 || position.x == 400) && position.y == 360)
+                {
+                    return true;
+                }
+
+                int possibleDirs = 0;
+                if (CanMove(Direction.Up)) possibleDirs++;
+                if (CanMove(Direction.Right)) possibleDirs++;
+                if (CanMove(Direction.Down)) possibleDirs++;
+                if (CanMove(Direction.Left)) possibleDirs++;
+
+                if (possibleDirs >= 3)
+                {
+                    return true;
+                }
+
+                return (CanMove(Direction.Up) && CanMove(Direction.Right))
+                    || CanMove(Direction.Right) && CanMove(Direction.Down)
+                    || CanMove(Direction.Down) && CanMove(Direction.Left)
+                    || CanMove(Direction.Left) && CanMove(Direction.Up);
+            }
+
+            return false;
+        }
+
+        public bool CanMove(Direction? dir = null)
         {
             double newY = 0;
             double newX = 0;
             double row = 0;
             double col = 0;
-            switch (direction)
+
+            switch (dir != null ? dir : direction)
             {
                 case Direction.Up:
                     newY = position.y - 1;
@@ -90,14 +125,9 @@
             }
         }
 
-        public void TryChangeDirection()
+        public virtual void TryChangeDirection()
         {
-            var prevDir = direction;
-            direction = nextDirection;
-            if (!CanMove())
-            {
-                direction = prevDir;
-            }
+            
         }
 
         public virtual void Move()
@@ -134,6 +164,56 @@
                     break;
                 default:
                     break;
+            }
+        }
+
+        protected Direction GetRandomDir(Direction? blockedDir = null)
+        {
+            while (true)
+            {
+                var newDir = random.Next(4);
+
+                if (blockedDir == null)
+                {
+                    return (Direction)newDir;
+                }
+
+                if (newDir != (int)blockedDir)
+                {
+                    return (Direction)newDir;
+                }
+            }
+        }
+
+        protected Direction GetOppositeDir()
+        {
+            switch (direction)
+            {
+                case Direction.Left:
+                    return Direction.Right;
+                case Direction.Up:
+                    return Direction.Down;
+                case Direction.Right:
+                    return Direction.Left;
+                case Direction.Down:
+                    return Direction.Up;
+                default:
+                    return Direction.Right;
+            }
+        }
+
+        protected Direction GetClosestDirection(bool isNext)
+        {
+            int directionCount = Enum.GetValues(typeof(Direction)).Length;
+            int currentDirection = (int)direction;
+
+            if (isNext)
+            {
+                return (Direction)((currentDirection + 1) % directionCount);
+            }
+            else
+            {
+                return (Direction)((currentDirection - 1 + directionCount) % directionCount);
             }
         }
     }

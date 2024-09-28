@@ -23,7 +23,9 @@ namespace project_gui
         private const int _characterLen = 38;
         private int[,] board = GameTools._boardPattern;
         private Pacman _packman;
+        private Blinky _blinky;
         private Image _packmanImg;
+        private Image _blinkyImg;
         private bool _isRunning;
         private bool _isGameOver;
         private const int _gameSpeed = 1;
@@ -49,13 +51,22 @@ namespace project_gui
             _smallBallsImgs = new();
             DrawBalls();
             _packman = new Pacman(_cellSize);
+            _blinky = new Blinky(_cellSize, _packman);
+
+            // blinky img
+            _blinkyImg = new Image();
+            _blinkyImg.Source = AssetsLoader.GetNextGostImg(_blinky.direction, Ghost.Blinky);
+            _blinkyImg.Width = _characterLen;
+            _blinkyImg.Height = _characterLen;
+            DrawCharacterImg(_blinkyImg, _blinky.position);
+            gameCanvas.Children.Add(_blinkyImg);
 
             // packman img
             _packmanImg = new Image();
             _packmanImg.Source = AssetsLoader.GetNextPackmanImg(_packman.direction);
             _packmanImg.Width = _characterLen;
             _packmanImg.Height = _characterLen;
-            DrawPacmanImg(_packmanImg, _packman.position);
+            DrawCharacterImg(_packmanImg, _packman.position);
             gameCanvas.Children.Add(_packmanImg);
 
             UpdateScore();
@@ -71,7 +82,7 @@ namespace project_gui
                 _isRunning = true;
                 _isGameOver = false;
                 SetStartTxtVisible(false);
-                await PacmanLoop();
+                await GameLoop();
                 return;
             }
 
@@ -102,12 +113,14 @@ namespace project_gui
             }
         }
 
-        private async Task PacmanLoop()
+        private async Task GameLoop()
         {
             while (_isRunning && !_isGameOver) 
             {
                 await Task.Delay(_gameSpeed); 
                 _packman.TryChangeDirection();
+
+                // ruch Pacman'a
                 if (_packman.IsMoveTime() && _packman.CanMove())
                 {
                     _packman.Move();
@@ -119,6 +132,18 @@ namespace project_gui
                     TryEatBigBall();
                     TryEatSmallBall();
                     UpdateScore();
+                }
+                
+                // ruch Blinky
+                if (_blinky.IsMoveTime())
+                {
+                    if (_blinky.IsChangeDirectionPossible())
+                    {
+                        _blinky.ChangeGhostDirection();
+                    }
+                    
+                    _blinkyImg.Source = AssetsLoader.GetNextGostImg(_blinky.direction, Ghost.Blinky);
+                    _blinky.Move();
                 }
 
                 Draw();
@@ -329,7 +354,7 @@ namespace project_gui
             StartTextBox.Visibility = _isGameOver ? Visibility.Visible : Visibility.Hidden;
         }
 
-        private void DrawPacmanImg(Image img, project_logic.Point point)
+        private void DrawCharacterImg(Image img, project_logic.Point point)
         {
             Canvas.SetLeft(img, point.x + ((_cellSize - _characterLen) / 2));
             Canvas.SetTop(img, point.y + ((_cellSize - _characterLen) / 2));
@@ -349,7 +374,8 @@ namespace project_gui
 
         private void Draw()
         {
-            DrawPacmanImg(_packmanImg, _packman.position);
+            DrawCharacterImg(_packmanImg, _packman.position);
+            DrawCharacterImg(_blinkyImg, _blinky.position);
         }
     }
 }

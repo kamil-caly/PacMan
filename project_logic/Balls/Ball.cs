@@ -14,10 +14,10 @@
 
         public bool CanRemoveBall(Point pacmanPos)
         {
-            int startX = pacmanPos.x + 5;
-            int endX = pacmanPos.x + _cellSize - 5;
-            int startY = pacmanPos.y + 5;
-            int endY = pacmanPos.y + _cellSize - 5;
+            double startX = pacmanPos.x + 5;
+            double endX = pacmanPos.x + _cellSize - 5;
+            double startY = pacmanPos.y + 5;
+            double endY = pacmanPos.y + _cellSize - 5;
 
             double startBallX = _position.x * _cellSize + ((_cellSize - _len) / 2);
             double endBallX = _position.x * _cellSize + ((_cellSize - _len) / 2 * 3);
