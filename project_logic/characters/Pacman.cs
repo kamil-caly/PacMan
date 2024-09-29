@@ -12,7 +12,7 @@
             life = 3;
             score = 0;
             speed = 5;
-            position = new Point(9 * cellSize, 11 * cellSize);
+            SetStartPosition();
             direction = Direction.Up;
             nextDirection = direction;
         }
@@ -61,6 +61,16 @@
             {
                 highScore = score;
             }
+        }
+
+        public void LifeLoose()
+        {
+            life--;
+        }
+
+        public void SetStartPosition()
+        {
+            position = new Point(9 * cellSize, 11 * cellSize);
         }
     }
 }

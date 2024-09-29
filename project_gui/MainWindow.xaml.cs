@@ -33,6 +33,8 @@ namespace project_gui
         private List<Image> _bigBallsImgs;
         private List<Image> _smallBallsImgs;
         private const string _winTxt = "You win!";
+        private const string _looseTxt = "Game Over!";
+        private const string _lifeImgSource = "assets/Pacman 2 1.png";
 
         public MainWindow()
         {
@@ -40,19 +42,33 @@ namespace project_gui
             RestartGame();
         }
 
-        private void RestartGame()
+        private void RestartGame(bool isHardRestart = true)
         {
             _isGameOver = false;
             _isRunning = false;
-            gameCanvas.Children.Clear();
-            DrawBoard();
 
-            _ballsMng = new(_cellSize, _bigBallLen, _smallBallLen);
-            _bigBallsImgs = new();
-            _smallBallsImgs = new();
-            DrawBalls();
+            if (isHardRestart)
+            {
+                gameCanvas.Children.Clear();
+                DrawBoard();
+                UpdateLifeView(true);
+                _ballsMng = new(_cellSize, _bigBallLen, _smallBallLen);
+                _bigBallsImgs = new();
+                _smallBallsImgs = new();
+                DrawBalls();
+                _packman = new Pacman(_cellSize);
+            }
+            else
+            {
+                _packman.SetStartPosition();
+                gameCanvas.Children.Remove(_packmanImg);
+                foreach (var ghost in _ghosts)
+                {
+                    gameCanvas.Children.Remove(_ghostsImg[ghost.kind]);
+                }
+                _isRunning = true;
+            }
 
-            _packman = new Pacman(_cellSize);
             _ghosts = new List<Ghost>() 
             {
                 new Blinky(_cellSize, _packman),
@@ -80,7 +96,10 @@ namespace project_gui
             gameCanvas.Children.Add(_packmanImg);
 
             UpdateScore();
-            SetStartTxtVisible();
+            if (isHardRestart)
+            {
+                SetStartTxtVisible();
+            }
             Draw();
         }
 
@@ -99,6 +118,11 @@ namespace project_gui
             if (e.Key != Key.R && StartTextBox.Text != _winTxt)
             {
                 SetStartTxtVisible(false);
+            }
+
+            if (_isGameOver && !_isRunning)
+            {
+                RestartGame();
             }
 
             switch (e.Key)
@@ -147,6 +171,15 @@ namespace project_gui
                 // ruch duchów
                 foreach (var ghost in _ghosts)
                 {
+                    if (ghost.PacmanHitLogic())
+                    {
+                        UpdateLifeView();
+                        if (_packman.life > 0)
+                        {
+                            RestartGame(false);
+                        }
+                    }
+
                     if (ghost.IsMoveTime())
                     {
                         if (ghost.IsChangeDirectionPossible())
@@ -155,13 +188,16 @@ namespace project_gui
                         }
 
                         _ghostsImg[ghost.kind].Source = AssetsLoader.GetNextGostImg(ghost.direction, ghost.kind);
+
+                        // tymczasowe zablokowanie chodzenia Pinky
+                        // if (ghost.kind == GhostKind.Blinky)
                         ghost.Move();
                     }
                 }
 
                 Draw();
 
-                if (_ballsMng.IsBallsEmpty())
+                if (_ballsMng.IsBallsEmpty() || _packman.life <= 0)
                 {
                     _isGameOver = true;
                     _isRunning = false;
@@ -362,7 +398,7 @@ namespace project_gui
 
         private void UpdateGameOverTxt()
         {
-            StartTextBox.Text = _isGameOver ? _winTxt : "";
+            StartTextBox.Text = _isGameOver ? (_packman.life <= 0 ? _looseTxt : _winTxt) : "";
             StartTextBox.FontSize = _isGameOver ? 60 : 32;
             StartTextBox.Visibility = _isGameOver ? Visibility.Visible : Visibility.Hidden;
         }
@@ -398,6 +434,29 @@ namespace project_gui
         private Ghost GetGhost(GhostKind kind)
         {
             return _ghosts.First(g => g.kind == kind);
+        }
+
+        private void UpdateLifeView(bool restart = false)
+        {
+            if (restart)
+            {
+                LifePanel.Children.Clear();
+                for (int i = 0; i < 3; i++)
+                {
+                    LifePanel.Children.Add(new Image() 
+                    {
+                        Source = new BitmapImage(new Uri(_lifeImgSource, UriKind.RelativeOrAbsolute)),
+                        Width = 30,
+                        Height = 30,
+                        Margin = new Thickness(5)
+                    });
+
+                }
+            }
+            else if (LifePanel.Children.Count > 0)
+            {
+                LifePanel.Children.Remove(LifePanel.Children[LifePanel.Children.Count - 1]);
+            }
         }
     }
 }

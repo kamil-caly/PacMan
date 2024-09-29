@@ -72,5 +72,32 @@
         }
 
         protected abstract IEnumerable<Direction> GetDirections();
+
+        protected bool HitPacman()
+        {
+            int pacmanStartHitX = pacman.position.x - 20;
+            int pacmanEndHitX = pacman.position.x + 20;
+            int pacmanStartHitY = pacman.position.y - 20;
+            int pacmanEndHitY = pacman.position.y + 20;
+
+            if (this.position.x >= pacmanStartHitX && this.position.x <= pacmanEndHitX 
+                && this.position.y >= pacmanStartHitY && this.position.y <= pacmanEndHitY)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        public bool PacmanHitLogic()
+        {
+            if (HitPacman())
+            {
+                pacman.LifeLoose();
+                return true;
+            }
+
+            return false;
+        }
     }
 }

@@ -7,3 +7,5 @@
 7) Pacman nie może wchodzić do domu duchów. ✔
 8) Wyświetlanie żyć gracza. ✔
 9) Rysowanie i poruszanie się ducha: Pinky (różowy) -> zgodnie z algorytmem. ✔
+10) Kolizja z duchami -> utrata życia. ✔
+11) Koniec gry gdy strata 3 żyć. ✔
