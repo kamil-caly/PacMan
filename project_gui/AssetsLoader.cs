@@ -61,5 +61,10 @@ namespace project_gui
         {
             return new BitmapImage(new Uri($"assets/Ghost {(int)ghost} {(int)dir + 1}.png", UriKind.Relative));
         }
+
+        public static ImageSource GetPanicGostImg(bool isDarkMode)
+        {
+            return new BitmapImage(new Uri($"assets/Ghost {(isDarkMode ? 4 : 5)}.png", UriKind.Relative));
+        }
     }
 }

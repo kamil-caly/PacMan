@@ -6,7 +6,7 @@
         {
             kind = GhostKind.Blinky;
             steps = 0;
-            speed = 6;
+            speed = 5; // 6
             position = new Point(10 * cellSize, 9 * cellSize);
 
             while (true)
@@ -98,7 +98,7 @@
                 return dirs;
             }
 
-            // pacmam jest na północny-zachód od Blinky
+            // pacmam jest na północny-wschód od Blinky
             if (pX > bX && pY < bY)
             {
                 if (pX - bX > bY - pY)
@@ -127,7 +127,7 @@
                 return dirs;
             }
 
-            // pacmam jest na północny-wschód od Blinky
+            // pacmam jest na północny-zachód od Blinky
             if (pX < bX && pY < bY)
             {
                 if (bX - pX > bY - pY)

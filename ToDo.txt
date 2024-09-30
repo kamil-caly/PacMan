@@ -9,3 +9,4 @@
 9) Rysowanie i poruszanie się ducha: Pinky (różowy) -> zgodnie z algorytmem. ✔
 10) Kolizja z duchami -> utrata życia. ✔
 11) Koniec gry gdy strata 3 żyć. ✔
+12) Uciekanie duchów (zmiana koloru na niebieski) przez pewien czas (8s) podczas zjedzenia dużej kropki. 

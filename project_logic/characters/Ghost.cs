@@ -4,6 +4,8 @@
     {
         protected Pacman pacman { get; set; }
         public GhostKind kind { get; set; }
+        public bool isPanicMode { get;  set; }
+        public int panicModeTimeS { get; } = 8;
         public Ghost(int cellSize, Pacman pacman) : base(cellSize)
         {
             this.pacman = pacman;
@@ -43,7 +45,7 @@
 
         public void ChangeGhostDirection()
         {
-            foreach (var dir in GetDirections())
+            foreach (var dir in isPanicMode ? GetEscapeDirections() : GetDirections())
             {
                 var prevDir = direction;
                 direction = dir;
@@ -72,6 +74,185 @@
         }
 
         protected abstract IEnumerable<Direction> GetDirections();
+
+        protected IEnumerable<Direction> GetEscapeDirections()
+        {
+            var dirs = new List<Direction>();
+            var opDir = GetOppositeDir();
+
+            int pX = pacman.position.x + (cellSize / 2);
+            int pY = pacman.position.y + (cellSize / 2);
+            int gX = this.position.x + (cellSize / 2);
+            int gY = this.position.y + (cellSize / 2);
+
+            // pacmam jest na południowy-wschód od ducha
+            if (pX > gX && pY > gY)
+            {
+                if (pX - gX > pY - gY)
+                {
+                    dirs.Add(Direction.Left);
+                    dirs.Add(Direction.Up);
+                }
+                else
+                {
+                    dirs.Add(Direction.Up);
+                    dirs.Add(Direction.Left);
+                }
+
+                if (random.Next(2) == 0)
+                {
+                    dirs.Add(Direction.Right);
+                    dirs.Add(Direction.Down);
+                }
+                else
+                {
+                    dirs.Add(Direction.Down);
+                    dirs.Add(Direction.Right);
+                }
+
+                dirs.Remove(opDir);
+                return dirs;
+            }
+
+            // pacmam jest na południowy-zachód od ducha
+            if (pX < gX && pY > gY)
+            {
+                if (gX - pX > pY - gY)
+                {
+                    dirs.Add(Direction.Right);
+                    dirs.Add(Direction.Up);
+                }
+                else
+                {
+                    dirs.Add(Direction.Up);
+                    dirs.Add(Direction.Right);
+                }
+
+                if (random.Next(2) == 0)
+                {
+                    dirs.Add(Direction.Left);
+                    dirs.Add(Direction.Down);
+                }
+                else
+                {
+                    dirs.Add(Direction.Down);
+                    dirs.Add(Direction.Left);
+                }
+
+                dirs.Remove(opDir);
+                return dirs;
+            }
+
+            // pacmam jest na północny-wschód od ducha
+            if (pX > gX && pY < gY)
+            {
+                if (pX - gX > gY - pY)
+                {
+                    dirs.Add(Direction.Left);
+                    dirs.Add(Direction.Down);
+                }
+                else
+                {
+                    dirs.Add(Direction.Down);
+                    dirs.Add(Direction.Left);
+                }
+
+                if (random.Next(2) == 0)
+                {
+                    dirs.Add(Direction.Right);
+                    dirs.Add(Direction.Up);
+                }
+                else
+                {
+                    dirs.Add(Direction.Up);
+                    dirs.Add(Direction.Right);
+                }
+
+                dirs.Remove(opDir);
+                return dirs;
+            }
+
+            // pacmam jest na północny-zachód od ducha
+            if (pX < gX && pY < gY)
+            {
+                if (gX - pX > gY - pY)
+                {
+                    dirs.Add(Direction.Right);
+                    dirs.Add(Direction.Down);
+                }
+                else
+                {
+                    dirs.Add(Direction.Down);
+                    dirs.Add(Direction.Right);
+                }
+
+                if (random.Next(2) == 0)
+                {
+                    dirs.Add(Direction.Left);
+                    dirs.Add(Direction.Up);
+                }
+                else
+                {
+                    dirs.Add(Direction.Up);
+                    dirs.Add(Direction.Left);
+                }
+
+                dirs.Remove(opDir);
+                return dirs;
+            }
+
+            // packman jest na południe od ducha
+            if (pX == gX && pY > gY)
+            {
+                dirs.Add(Direction.Up);
+                var tmpDirs = Enum.GetValues(typeof(Direction)).Cast<Direction>().ToList();
+                tmpDirs.Remove(Direction.Up);
+                tmpDirs = tmpDirs.OrderBy(x => random.Next()).ToList();
+                dirs.AddRange(tmpDirs);
+                dirs.Remove(opDir);
+                return dirs;
+            }
+
+            // packman jest na północ od ducha
+            if (pX == gX && pY < gY)
+            {
+                dirs.Add(Direction.Down);
+                var tmpDirs = Enum.GetValues(typeof(Direction)).Cast<Direction>().ToList();
+                tmpDirs.Remove(Direction.Down);
+                tmpDirs = tmpDirs.OrderBy(x => random.Next()).ToList();
+                dirs.AddRange(tmpDirs);
+                dirs.Remove(opDir);
+                return dirs;
+            }
+
+            // packman jest na zachód od ducha
+            if (pX < gX && pY == gY)
+            {
+                dirs.Add(Direction.Right);
+                var tmpDirs = Enum.GetValues(typeof(Direction)).Cast<Direction>().ToList();
+                tmpDirs.Remove(Direction.Right);
+                tmpDirs = tmpDirs.OrderBy(x => random.Next()).ToList();
+                dirs.AddRange(tmpDirs);
+                dirs.Remove(opDir);
+                return dirs;
+            }
+
+            // packman jest na wschód od Blinky
+            if (pX > gX && pY == gY)
+            {
+                dirs.Add(Direction.Left);
+                var tmpDirs = Enum.GetValues(typeof(Direction)).Cast<Direction>().ToList();
+                tmpDirs.Remove(Direction.Left);
+                tmpDirs = tmpDirs.OrderBy(x => random.Next()).ToList();
+                dirs.AddRange(tmpDirs);
+                dirs.Remove(opDir);
+                return dirs;
+            }
+
+            dirs = Enum.GetValues(typeof(Direction)).Cast<Direction>().ToList();
+            dirs.Remove(opDir);
+            return dirs.OrderBy(x => random.Next()).ToList();
+        }
 
         protected bool HitPacman()
         {

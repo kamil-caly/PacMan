@@ -11,7 +11,7 @@
         {
             life = 3;
             score = 0;
-            speed = 5;
+            speed = 4; // 5
             SetStartPosition();
             direction = Direction.Up;
             nextDirection = direction;

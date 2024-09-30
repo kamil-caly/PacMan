@@ -6,7 +6,7 @@
         {
             kind = GhostKind.Pinky;
             steps = 0;
-            speed = 6;
+            speed = 5; // 6
             position = new Point(8 * cellSize, 9 * cellSize);
 
             while (true)
@@ -116,7 +116,7 @@
                 return dirs;
             }
 
-            // pole przed pacman'em jest na północny-zachód od Pinky
+            // pole przed pacman'em jest na północny-wschód od Pinky
             if (pX > ppX && pY < ppY)
             {
                 if (pX - ppX > ppY - pY)
@@ -145,7 +145,7 @@
                 return dirs;
             }
 
-            // pole przed pacman'em jest na północny-wschód od Pinky
+            // pole przed pacman'em jest na północny-zachód od Pinky
             if (pX < ppX && pY < ppY)
             {
                 if (ppX - pX > ppY - pY)
