@@ -1,4 +1,6 @@
-﻿namespace project_logic.characters
+﻿using System.ComponentModel;
+
+namespace project_logic.characters
 {
     public class Blinky : Ghost
     {
@@ -7,7 +9,7 @@
             kind = GhostKind.Blinky;
             steps = 0;
             speed = 5; // 6
-            position = new Point(10 * cellSize, 9 * cellSize);
+            SetStartPosition();
 
             while (true)
             {
@@ -17,6 +19,11 @@
                     break;
                 }
             }
+        }
+
+        public override void SetStartPosition()
+        {
+            position = new Point(10 * cellSize, 9 * cellSize);
         }
 
         protected override IEnumerable<Direction> GetDirections()

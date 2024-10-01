@@ -191,10 +191,20 @@ namespace project_gui
                 {
                     if (ghost.PacmanHitLogic())
                     {
-                        UpdateLifeView();
-                        if (_packman.life > 0)
+                        if (ghost.isPanicMode)
                         {
-                            RestartGame(false);
+                            _packman.UpdatePoints(ScoreType.Ghost);
+                            ghost.isPanicMode = false;
+                            ghost.SetStartPosition();
+                            _ghostsImg[ghost.kind].Source = AssetsLoader.GetNextGostImg(ghost.direction, ghost.kind);
+                        }
+                        else
+                        {
+                            UpdateLifeView();
+                            if (_packman.life > 0)
+                            {
+                                RestartGame(false);
+                            }
                         }
                     }
 
@@ -233,9 +243,10 @@ namespace project_gui
                             if (diff2.TotalMilliseconds >= panicModeSwitchSkinMS)
                             {
                                 isDarkCurrentPanicModeImg = !isDarkCurrentPanicModeImg;
-                                foreach (var ghostImg in _ghostsImg)
+                                foreach (var ghost in _ghosts)
                                 {
-                                    ghostImg.Value.Source = AssetsLoader.GetPanicGostImg(isDarkCurrentPanicModeImg);
+                                    if (ghost.isPanicMode)
+                                        _ghostsImg[ghost.kind].Source = AssetsLoader.GetPanicGostImg(isDarkCurrentPanicModeImg);
                                 }
                                 currentPanicModeSwitchSkinTime = DateTime.Now;
                             }

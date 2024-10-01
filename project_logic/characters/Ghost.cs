@@ -11,6 +11,8 @@
             this.pacman = pacman;
         }
 
+        public abstract void SetStartPosition();
+
         public bool IsChangeDirectionPossible()
         {
             double x = (double)position.x / cellSize;
@@ -274,7 +276,10 @@
         {
             if (HitPacman())
             {
-                pacman.LifeLoose();
+                if (!this.isPanicMode)
+                {
+                    pacman.LifeLoose();
+                }
                 return true;
             }
 

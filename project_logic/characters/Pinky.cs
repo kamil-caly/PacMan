@@ -7,7 +7,7 @@
             kind = GhostKind.Pinky;
             steps = 0;
             speed = 5; // 6
-            position = new Point(8 * cellSize, 9 * cellSize);
+            SetStartPosition();
 
             while (true)
             {
@@ -17,6 +17,11 @@
                     break;
                 }
             }
+        }
+
+        public override void SetStartPosition()
+        {
+            position = new Point(8 * cellSize, 9 * cellSize);
         }
 
         protected override IEnumerable<Direction> GetDirections()
