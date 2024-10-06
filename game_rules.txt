@@ -10,9 +10,9 @@ Duże kropki:
 Duchy:
   - W labiryncie poruszają się cztery duchy: Blinky (czerwony), Pinky (różowy), Inky (niebieski) i Clyde (pomarańczowy).
   Duchy mają różne strategie poruszania się.
-  - Blinky (czerwony duch): Ściga Pac-Mana bezpośrednio (w odległości mniejszej lub równej 8 kafelków od Packmana), dążąc do jego aktualnej pozycji. ✔
+  - Blinky (czerwony duch): Ściga Pac-Mana bezpośrednio (w odległości mniejszej lub równej 12 kafelków od Packmana), dążąc do jego aktualnej pozycji. ✔
   - Pinky (różowy duch): Pinky próbuje przewidzieć ruchy Pac-Mana. Stara się ustawić cztery pola przed Pac-Manem w kierunku, w którym się porusza, tworząc pułapkę (w odległości mniejszej lub równej 8 kafelków od Packmana). Jeśli Pac-Man porusza się na północ, Pinky dąży do miejsca cztery pola przed nim. ✔
-  - Inky (niebieski duch): Inky ma najbardziej złożony algorytm ruchu. Jego cel jest wyznaczany w oparciu o pozycję Blinky'ego i Pac-Mana. W skrócie, cel Inky'ego jest wyznaczony poprzez znalezienie punktu, który jest odzwierciedleniem odległości między Pac-Manem a Blinky'm (w odległości mniejszej lub równej 8 kafelków od Packmana). To sprawia, że jego ruchy są bardziej nieprzewidywalne. ✔
+  - Inky (niebieski duch): Inky ma najbardziej złożony algorytm ruchu. Jego cel jest wyznaczany w oparciu o pozycję Blinky'ego i Pac-Mana. W skrócie, cel Inky'ego jest wyznaczony poprzez znalezienie punktu, który jest odzwierciedleniem odległości między Pac-Manem a Blinky'm (w odległości mniejszej lub równej 12 kafelków od Packmana). To sprawia, że jego ruchy są bardziej nieprzewidywalne. ✔
   - Clyde (pomarańczowy duch): Clyde porusza się w dość nietypowy sposób. Gdy jest daleko od Pac-Mana, dąży w jego kierunku, ale gdy zbliży się na odległość ośmiu pól, zmienia kierunek i zaczyna poruszać się w losowych kierunkach. ✔
   
   - Duchy mogą poruszać się tylko w czterech kierunkach: góra, dół, lewo, prawo. ✔

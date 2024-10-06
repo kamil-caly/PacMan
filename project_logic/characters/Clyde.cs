@@ -2,7 +2,7 @@
 {
     public class Clyde : Ghost
     {
-        public Clyde(int cellSize, int panicModeTimeS = 8, bool isPanicMode = false, int speed = 5) : base(cellSize, panicModeTimeS, isPanicMode)
+        public Clyde(int cellSize, int panicModeTimeS = 5, bool isPanicMode = false, int speed = 5) : base(cellSize, panicModeTimeS, isPanicMode)
         {
             kind = GhostKind.Clyde;
             steps = 0;
@@ -21,14 +21,14 @@
 
         public override void SetStartPosition()
         {
-            position = new Point(8 * cellSize + cellSize / 2, 9 * cellSize);
+            position = new Point(9 * cellSize, 9 * cellSize);
         }
 
         protected override IEnumerable<Direction> GetDirections()
         {
             var dirs = new List<Direction>();
             var opDir = GetOppositeDir();
-            int criticalDistance = 8 * cellSize;
+            int criticalDistance = 6 * cellSize;
 
             int pX = mediator.GetPX() + (cellSize / 2);
             int pY = mediator.GetPY() + (cellSize / 2);
@@ -37,7 +37,7 @@
 
             int packmanClydeDistance = (int)Math.Sqrt(Math.Pow(pX - cX, 2) + Math.Pow(pY - cY, 2));
 
-            // algorytm działa tylko w odległości większej niż 8 kratek
+            // algorytm działa tylko w odległości większej niż 6 kratek
             if (packmanClydeDistance <= criticalDistance)
             {
                 dirs = Enum.GetValues(typeof(Direction)).Cast<Direction>().ToList();

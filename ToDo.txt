@@ -9,8 +9,9 @@
 9) Rysowanie i poruszanie się ducha: Pinky (różowy) -> zgodnie z algorytmem. ✔
 10) Kolizja z duchami -> utrata życia. ✔
 11) Koniec gry gdy strata 3 żyć. ✔
-12) Uciekanie duchów (zmiana koloru na niebieski) przez pewien czas (8s) podczas zjedzenia dużej kropki. ✔
+12) Uciekanie duchów (zmiana koloru na niebieski) przez pewien czas (5s) podczas zjedzenia dużej kropki. ✔
 13) Możliwość zjadania duchów w trybie 'panic' + punkty za każdego ducha, zjedzone duchy nie są już w trybie 'panic' i zaczynają od pola startowego. ✔
 14) Refaktor + dodanie mediatora. ✔
 13) Rysowanie i poruszanie się ducha: Inky (niebieski) -> zgodnie z algorytmem. ✔
 14) Rysowanie i poruszanie się ducha: Clyde (pomarańczowy) -> zgodnie z algorytmem. ✔
+15) Poprawa algorytmów duchów (aby było trudniej). ✔

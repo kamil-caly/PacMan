@@ -259,7 +259,6 @@ namespace project_gui
             if (currentEatBigBallTime != null)
             {
                 TimeSpan diff = DateTime.Now - currentEatBigBallTime.Value;
-                highScoreTextBox.Text = diff.TotalSeconds.ToString();
                 if (diff.TotalSeconds >= _ghosts.First().PanicModeTimeS)
                 {
                     _ghosts.ForEach(g => g.SetPanicMode(false));
@@ -537,7 +536,7 @@ namespace project_gui
         private void UpdateScore()
         {
             scoreTextBox.Text = $"SCORE: {_packman.score}";
-            //highScoreTextBox.Text = $"HIGH SCORE: {Pacman.highScore}";
+            highScoreTextBox.Text = $"HIGH SCORE: {Pacman.highScore}";
         }
         #endregion
 

@@ -2,7 +2,7 @@
 {
     public class Inky : Ghost
     {
-        public Inky(int cellSize, int panicModeTimeS = 8, bool isPanicMode = false, int speed = 5) : base(cellSize, panicModeTimeS, isPanicMode)
+        public Inky(int cellSize, int panicModeTimeS = 5, bool isPanicMode = false, int speed = 5) : base(cellSize, panicModeTimeS, isPanicMode)
         {
             kind = GhostKind.Inky;
             steps = 0;
@@ -28,7 +28,7 @@
         {
             var dirs = new List<Direction>();
             var opDir = GetOppositeDir();
-            int criticalDistance = 8 * cellSize;
+            int criticalDistance = 12 * cellSize;
 
             int pX = mediator.GetPX() + (cellSize / 2);
             int pY = mediator.GetPY() + (cellSize / 2);
@@ -37,7 +37,7 @@
 
             int packmanInkyDistance = (int)Math.Sqrt(Math.Pow(pX - iX, 2) + Math.Pow(pY - iY, 2));
 
-            // algorytm działa tylko w odległości 8 kratek i mniejszej
+            // algorytm działa tylko w odległości 12 kratek i mniejszej
             if (packmanInkyDistance > criticalDistance)
             {
                 dirs = Enum.GetValues(typeof(Direction)).Cast<Direction>().ToList();

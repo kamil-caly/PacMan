@@ -4,7 +4,7 @@ namespace project_logic.characters
 {
     public class Pinky : Ghost
     {
-        public Pinky(int cellSize, int panicModeTimeS = 8, bool isPanicMode = false, int speed = 5) : base(cellSize, panicModeTimeS, isPanicMode)
+        public Pinky(int cellSize, int panicModeTimeS = 5, bool isPanicMode = false, int speed = 5) : base(cellSize, panicModeTimeS, isPanicMode)
         {
             kind = GhostKind.Pinky;
             steps = 0;
@@ -23,14 +23,14 @@ namespace project_logic.characters
 
         public override void SetStartPosition()
         {
-            position = new Point(8 * cellSize, 9 * cellSize);
+            position = new Point(8 * cellSize + cellSize / 2, 9 * cellSize);
         }
 
         protected override IEnumerable<Direction> GetDirections()
         {
             var dirs = new List<Direction>();
             var opDir = GetOppositeDir();
-            int criticalDistance = 8 * cellSize;
+            int criticalDistance = 12 * cellSize;
 
             int pX = mediator.GetPX() + (cellSize / 2);
             int pY = mediator.GetPY() + (cellSize / 2);
@@ -39,7 +39,7 @@ namespace project_logic.characters
 
             int packmanBlinkyDistance = (int)Math.Sqrt(Math.Pow(pX - ppX, 2) + Math.Pow(pY - ppY, 2));
 
-            // algorytm działa tylko w odległości 8 kratek i mniejszej
+            // algorytm działa tylko w odległości 12 kratek i mniejszej
             if (packmanBlinkyDistance > criticalDistance)
             {
                 dirs = Enum.GetValues(typeof(Direction)).Cast<Direction>().ToList();
