@@ -12,4 +12,5 @@
 12) Uciekanie duchów (zmiana koloru na niebieski) przez pewien czas (8s) podczas zjedzenia dużej kropki. ✔
 13) Możliwość zjadania duchów w trybie 'panic' + punkty za każdego ducha, zjedzone duchy nie są już w trybie 'panic' i zaczynają od pola startowego. ✔
 14) Refaktor + dodanie mediatora. ✔
-13) Rysowanie i poruszanie się ducha: Inky (niebieski) -> zgodnie z algorytmem. 
+13) Rysowanie i poruszanie się ducha: Inky (niebieski) -> zgodnie z algorytmem. ✔
+14) Rysowanie i poruszanie się ducha: Clyde (pomarańczowy) -> zgodnie z algorytmem. ✔

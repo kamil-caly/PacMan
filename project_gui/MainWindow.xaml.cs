@@ -78,8 +78,9 @@ namespace project_gui
             _ghosts = new List<Ghost>() 
             {
                 new Blinky(_cellSize),
-                //new Pinky(_cellSize)
-                new Inky(_cellSize)
+                new Pinky(_cellSize),
+                new Inky(_cellSize),
+                new Clyde(_cellSize)
             };
 
             _ghostsImg = new Dictionary<GhostKind, Image>();
