@@ -16,6 +16,16 @@ namespace project_logic.characters.Mediator
             this.ghosts.ForEach(g => g.SetMediator(this));
         }
 
+        public int GetBlinkyX()
+        {
+            return this.ghosts.Where(g => g.kind == GhostKind.Blinky).First().position.x;
+        }
+
+        public int GetBlinkyY()
+        {
+            return this.ghosts.Where(g => g.kind == GhostKind.Blinky).First().position.y;
+        }
+
         public Direction GetPDir()
         {
             return this.pacman.direction;

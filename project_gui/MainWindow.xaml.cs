@@ -78,7 +78,8 @@ namespace project_gui
             _ghosts = new List<Ghost>() 
             {
                 new Blinky(_cellSize),
-                new Pinky(_cellSize)
+                //new Pinky(_cellSize)
+                new Inky(_cellSize)
             };
 
             _ghostsImg = new Dictionary<GhostKind, Image>();
@@ -223,6 +224,7 @@ namespace project_gui
                         _packman.UpdatePoints(ScoreType.Ghost);
                         ghost.SetPanicMode(false);
                         ghost.SetStartPosition();
+                        ghost.ChangeGhostDirection();
                         _ghostsImg[ghost.kind].Source = AssetsLoader.GetNextGostImg(ghost.direction, ghost.kind);
                     }
                     else
