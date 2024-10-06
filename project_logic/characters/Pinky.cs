@@ -1,12 +1,14 @@
-﻿namespace project_logic.characters
+﻿using project_logic.characters.Mediator;
+
+namespace project_logic.characters
 {
     public class Pinky : Ghost
     {
-        public Pinky(int cellSize, Pacman pacman) : base(cellSize, pacman)
+        public Pinky(int cellSize, int panicModeTimeS = 8, bool isPanicMode = false, int speed = 5) : base(cellSize, panicModeTimeS, isPanicMode)
         {
             kind = GhostKind.Pinky;
             steps = 0;
-            speed = 5; // 6
+            this.speed = speed; // 6
             SetStartPosition();
 
             while (true)
@@ -30,8 +32,8 @@
             var opDir = GetOppositeDir();
             int criticalDistance = 8 * cellSize;
 
-            int pX = pacman.position.x + (cellSize / 2);
-            int pY = pacman.position.y + (cellSize / 2);
+            int pX = mediator.GetPX() + (cellSize / 2);
+            int pY = mediator.GetPY() + (cellSize / 2);
             int ppX = this.position.x + (cellSize / 2);
             int ppY = this.position.y + (cellSize / 2);
 
@@ -45,7 +47,7 @@
                 return dirs.OrderBy(x => random.Next()).ToList();
             }
 
-            switch (pacman.direction)
+            switch (mediator.GetPDir())
             {
                 case Direction.Left:
                     pX -= 4 * cellSize;

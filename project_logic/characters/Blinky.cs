@@ -4,11 +4,11 @@ namespace project_logic.characters
 {
     public class Blinky : Ghost
     {
-        public Blinky(int cellSize, Pacman pacman) : base(cellSize, pacman)
+        public Blinky(int cellSize, int panicModeTimeS = 8, bool isPanicMode = false, int speed = 5) : base(cellSize, panicModeTimeS, isPanicMode)
         {
             kind = GhostKind.Blinky;
             steps = 0;
-            speed = 5; // 6
+            this.speed = speed; // 6
             SetStartPosition();
 
             while (true)
@@ -32,8 +32,8 @@ namespace project_logic.characters
             var opDir = GetOppositeDir();
             int criticalDistance = 8 * cellSize;
 
-            int pX = pacman.position.x + (cellSize / 2);
-            int pY = pacman.position.y + (cellSize / 2);
+            int pX = mediator.GetPX() + (cellSize / 2);
+            int pY = mediator.GetPY() + (cellSize / 2);
             int bX = this.position.x + (cellSize / 2);
             int bY = this.position.y + (cellSize / 2);
 

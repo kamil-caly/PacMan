@@ -1,17 +1,17 @@
-﻿namespace project_logic.characters
+﻿using project_logic.characters.Mediator;
+
+namespace project_logic.characters
 {
     public abstract class Ghost : Character
     {
-        protected Pacman pacman { get; set; }
         public GhostKind kind { get; set; }
-        public bool isPanicMode { get;  set; }
-        public int panicModeTimeS { get; } = 8;
-        public Ghost(int cellSize, Pacman pacman) : base(cellSize)
+        public bool isPanicMode { get;  private set; }
+        public readonly int PanicModeTimeS;
+        public Ghost(int cellSize, int panicModeTimeS, bool isPanicMode) : base(cellSize)
         {
-            this.pacman = pacman;
+            this.PanicModeTimeS = panicModeTimeS;
+            this.isPanicMode = isPanicMode;
         }
-
-        public abstract void SetStartPosition();
 
         public bool IsChangeDirectionPossible()
         {
@@ -82,8 +82,8 @@
             var dirs = new List<Direction>();
             var opDir = GetOppositeDir();
 
-            int pX = pacman.position.x + (cellSize / 2);
-            int pY = pacman.position.y + (cellSize / 2);
+            int pX = mediator.GetPX() + (cellSize / 2);
+            int pY = mediator.GetPY() + (cellSize / 2);
             int gX = this.position.x + (cellSize / 2);
             int gY = this.position.y + (cellSize / 2);
 
@@ -258,10 +258,10 @@
 
         protected bool HitPacman()
         {
-            int pacmanStartHitX = pacman.position.x - 20;
-            int pacmanEndHitX = pacman.position.x + 20;
-            int pacmanStartHitY = pacman.position.y - 20;
-            int pacmanEndHitY = pacman.position.y + 20;
+            int pacmanStartHitX = mediator.GetPX() - 20;
+            int pacmanEndHitX = mediator.GetPX() + 20;
+            int pacmanStartHitY = mediator.GetPY() - 20;
+            int pacmanEndHitY = mediator.GetPY() + 20;
 
             if (this.position.x >= pacmanStartHitX && this.position.x <= pacmanEndHitX 
                 && this.position.y >= pacmanStartHitY && this.position.y <= pacmanEndHitY)
@@ -278,12 +278,17 @@
             {
                 if (!this.isPanicMode)
                 {
-                    pacman.LifeLoose();
+                    mediator.Notify(this, EventType.LifeLoose);
                 }
                 return true;
             }
 
             return false;
+        }
+
+        public void SetPanicMode(bool panic)
+        {
+            isPanicMode = panic;
         }
     }
 }

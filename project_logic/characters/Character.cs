@@ -1,8 +1,12 @@
-﻿namespace project_logic.characters
+﻿using project_logic.characters.Mediator;
+
+namespace project_logic.characters
 {
     public abstract class Character
     {
         public int cellSize { get; set; }
+
+        protected IMediator mediator = default!;
         private int[,] board = GameTools._boardPattern;
         public Point position { get; set; } = default!;
         public int speed { get; set; }
@@ -15,6 +19,13 @@
         {
             this.cellSize = cellSize;
         }
+
+        public void SetMediator(IMediator mediator)
+        {
+            this.mediator = mediator;
+        }
+
+        public abstract void SetStartPosition();
 
         public bool IsMoveTime()
         {

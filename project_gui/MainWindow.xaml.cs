@@ -1,14 +1,13 @@
 ﻿using project_logic;
 using project_logic.Balls;
 using project_logic.characters;
-using System;
+using project_logic.characters.Mediator;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using System.Windows.Threading;
 
 namespace project_gui
 {
@@ -78,8 +77,8 @@ namespace project_gui
 
             _ghosts = new List<Ghost>() 
             {
-                new Blinky(_cellSize, _packman),
-                new Pinky(_cellSize, _packman)
+                new Blinky(_cellSize),
+                new Pinky(_cellSize)
             };
 
             _ghostsImg = new Dictionary<GhostKind, Image>();
@@ -107,7 +106,8 @@ namespace project_gui
             {
                 SetStartTxtVisible();
             }
-            Draw();
+            DrawCharacters();
+            new RegisterCharacters(_packman, _ghosts);
         }
 
         private async void Window_KeyDown(object sender, KeyEventArgs e)
@@ -120,16 +120,15 @@ namespace project_gui
                 SetStartTxtVisible(false);
                 await GameLoop();
                 return;
+            } 
+            else if (_isGameOver && !_isRunning)
+            {
+                RestartGame();
             }
 
             if (e.Key != Key.R && StartTextBox.Text != _winTxt)
             {
                 SetStartTxtVisible(false);
-            }
-
-            if (_isGameOver && !_isRunning)
-            {
-                RestartGame();
             }
 
             switch (e.Key)
@@ -154,114 +153,29 @@ namespace project_gui
             }
         }
 
-        private async Task GameLoop()
+        private void PackmanMove()
         {
-            while (_isRunning && !_isGameOver) 
+            if (_packman.IsMoveTime() && _packman.CanMove())
             {
-                await Task.Delay(_gameSpeed); 
-                _packman.TryChangeDirection();
-
-                // ruch Pacman'a
-                if (_packman.IsMoveTime() && _packman.CanMove())
+                _packman.Move();
+                if (_packman.steps <= 0)
                 {
-                    _packman.Move();
-                    if (_packman.steps <= 0)
-                    {
-                        _packmanImg.Source = AssetsLoader.GetNextPackmanImg(_packman.direction);
-                    }
-
-                    if (TryEatBigBall())
-                    {
-                        currentEatBigBallTime = DateTime.Now;
-                        currentPanicModeSwitchSkinTime = currentEatBigBallTime;
-                        _ghosts.ForEach(g => g.isPanicMode = true);
-                        isDarkCurrentPanicModeImg = true;
-
-                        foreach (var ghostImg in _ghostsImg)
-                        {
-                            ghostImg.Value.Source = AssetsLoader.GetPanicGostImg(isDarkCurrentPanicModeImg);
-                        }
-                    }
-                    TryEatSmallBall();
-                    UpdateScore();
+                    _packmanImg.Source = AssetsLoader.GetNextPackmanImg(_packman.direction);
                 }
 
-                // ruch duchów
-                foreach (var ghost in _ghosts)
+                if (TryEatBigBall())
                 {
-                    if (ghost.PacmanHitLogic())
-                    {
-                        if (ghost.isPanicMode)
-                        {
-                            _packman.UpdatePoints(ScoreType.Ghost);
-                            ghost.isPanicMode = false;
-                            ghost.SetStartPosition();
-                            _ghostsImg[ghost.kind].Source = AssetsLoader.GetNextGostImg(ghost.direction, ghost.kind);
-                        }
-                        else
-                        {
-                            UpdateLifeView();
-                            if (_packman.life > 0)
-                            {
-                                RestartGame(false);
-                            }
-                        }
-                    }
+                    currentEatBigBallTime = DateTime.Now;
+                    currentPanicModeSwitchSkinTime = currentEatBigBallTime;
+                    isDarkCurrentPanicModeImg = true;
 
-                    if (ghost.IsMoveTime())
+                    foreach (var ghostImg in _ghostsImg)
                     {
-                        if (ghost.IsChangeDirectionPossible())
-                        {
-                            ghost.ChangeGhostDirection();
-                        }
-
-                        // tymczasowe zablokowanie chodzenia Pinky
-                        // if (ghost.kind == GhostKind.Blinky)
-                        ghost.Move();
+                        ghostImg.Value.Source = AssetsLoader.GetPanicGostImg(isDarkCurrentPanicModeImg);
                     }
                 }
-
-                // do aktualizacji panic mode duchów
-                if (currentEatBigBallTime != null)
-                {
-                    TimeSpan diff = DateTime.Now - currentEatBigBallTime.Value;
-                    highScoreTextBox.Text = diff.TotalSeconds.ToString();
-                    if (diff.TotalSeconds >= _ghosts.First().panicModeTimeS)
-                    {
-                        _ghosts.ForEach(g => g.isPanicMode = false);
-                        foreach (var ghost in _ghosts)
-                        {
-                            _ghostsImg[ghost.kind].Source = AssetsLoader.GetNextGostImg(ghost.direction, ghost.kind);
-                        }
-                        currentEatBigBallTime = null;
-                    }
-                    else if (diff.TotalSeconds >= _ghosts.First().panicModeTimeS - 2)
-                    {
-                        if (currentPanicModeSwitchSkinTime != null)
-                        {
-                            TimeSpan diff2 = DateTime.Now - currentPanicModeSwitchSkinTime.Value;
-                            if (diff2.TotalMilliseconds >= panicModeSwitchSkinMS)
-                            {
-                                isDarkCurrentPanicModeImg = !isDarkCurrentPanicModeImg;
-                                foreach (var ghost in _ghosts)
-                                {
-                                    if (ghost.isPanicMode)
-                                        _ghostsImg[ghost.kind].Source = AssetsLoader.GetPanicGostImg(isDarkCurrentPanicModeImg);
-                                }
-                                currentPanicModeSwitchSkinTime = DateTime.Now;
-                            }
-                        }
-                    }
-                }
-
-                Draw();
-
-                if (_ballsMng.IsBallsEmpty() || _packman.life <= 0)
-                {
-                    _isGameOver = true;
-                    _isRunning = false;
-                    UpdateGameOverTxt();
-                }
+                TryEatSmallBall();
+                UpdateScore();
             }
         }
 
@@ -298,10 +212,136 @@ namespace project_gui
             }
         }
 
-        private void UpdateScore()
+        private void GhostsMove()
         {
-            scoreTextBox.Text = $"SCORE: {_packman.score}";
-            //highScoreTextBox.Text = $"HIGH SCORE: {Pacman.highScore}";
+            foreach (var ghost in _ghosts)
+            {
+                if (ghost.PacmanHitLogic())
+                {
+                    if (ghost.isPanicMode)
+                    {
+                        _packman.UpdatePoints(ScoreType.Ghost);
+                        ghost.SetPanicMode(false);
+                        ghost.SetStartPosition();
+                        _ghostsImg[ghost.kind].Source = AssetsLoader.GetNextGostImg(ghost.direction, ghost.kind);
+                    }
+                    else
+                    {
+                        UpdateLifeView();
+                        if (_packman.life > 0)
+                        {
+                            RestartGame(false);
+                        }
+                    }
+                }
+
+                if (ghost.IsMoveTime())
+                {
+                    if (ghost.IsChangeDirectionPossible())
+                    {
+                        ghost.ChangeGhostDirection();
+                        if (!ghost.isPanicMode)
+                            _ghostsImg[ghost.kind].Source = AssetsLoader.GetNextGostImg(ghost.direction, ghost.kind);
+                    }
+
+                    // tymczasowe zablokowanie chodzenia Pinky
+                    // if (ghost.kind == GhostKind.Blinky)
+                    ghost.Move();
+                }
+            }
+        }
+
+        private void UpdateGhostsPanicMode()
+        {
+            if (currentEatBigBallTime != null)
+            {
+                TimeSpan diff = DateTime.Now - currentEatBigBallTime.Value;
+                highScoreTextBox.Text = diff.TotalSeconds.ToString();
+                if (diff.TotalSeconds >= _ghosts.First().PanicModeTimeS)
+                {
+                    _ghosts.ForEach(g => g.SetPanicMode(false));
+                    foreach (var ghost in _ghosts)
+                    {
+                        _ghostsImg[ghost.kind].Source = AssetsLoader.GetNextGostImg(ghost.direction, ghost.kind);
+                    }
+                    currentEatBigBallTime = null;
+                }
+                else if (diff.TotalSeconds >= _ghosts.First().PanicModeTimeS - 2)
+                {
+                    if (currentPanicModeSwitchSkinTime != null)
+                    {
+                        TimeSpan diff2 = DateTime.Now - currentPanicModeSwitchSkinTime.Value;
+                        if (diff2.TotalMilliseconds >= panicModeSwitchSkinMS)
+                        {
+                            isDarkCurrentPanicModeImg = !isDarkCurrentPanicModeImg;
+                            foreach (var ghost in _ghosts)
+                            {
+                                if (ghost.isPanicMode)
+                                    _ghostsImg[ghost.kind].Source = AssetsLoader.GetPanicGostImg(isDarkCurrentPanicModeImg);
+                            }
+                            currentPanicModeSwitchSkinTime = DateTime.Now;
+                        }
+                    }
+                }
+            }
+        }
+
+        private async Task GameLoop()
+        {
+            while (_isRunning && !_isGameOver) 
+            {
+                await Task.Delay(_gameSpeed); 
+                _packman.TryChangeDirection();
+
+                // ruch Pacman'a
+                PackmanMove();
+
+                // ruch duchów
+                GhostsMove();
+
+                // do aktualizacji panic mode duchów
+                UpdateGhostsPanicMode();
+
+                DrawCharacters();
+
+                if (_ballsMng.IsBallsEmpty() || _packman.life <= 0)
+                {
+                    _isGameOver = true;
+                    _isRunning = false;
+                    UpdateGameOverTxt();
+                }
+            }
+        }
+
+        
+
+        #region Board Drawing
+        private void DrawCharacterImg(Image img, project_logic.Point point)
+        {
+            Canvas.SetLeft(img, point.x + ((_cellSize - _characterLen) / 2));
+            Canvas.SetTop(img, point.y + ((_cellSize - _characterLen) / 2));
+        }
+
+        private void DrawBigBallImg(Image img, PointD point)
+        {
+            Canvas.SetLeft(img, point.x + ((_cellSize - _bigBallLen) / 2));
+            Canvas.SetTop(img, point.y + ((_cellSize - _bigBallLen) / 2));
+        }
+
+        private void DrawSmallBallImg(Image img, PointD point)
+        {
+            Canvas.SetLeft(img, point.x + ((_cellSize - _smallBallLen) / 2));
+            Canvas.SetTop(img, point.y + ((_cellSize - _smallBallLen) / 2));
+        }
+
+        private void DrawCharacters()
+        {
+            DrawCharacterImg(_packmanImg, _packman.position);
+
+            foreach (var ghostImg in _ghostsImg)
+            {
+                DrawCharacterImg(ghostImg.Value, GetGhost(ghostImg.Key).position);
+            }
         }
 
         private void CreateField(int cornerRadius, int row, int col, bool isPath)
@@ -450,7 +490,10 @@ namespace project_gui
                 _smallBallsImgs.Add(smallBallImg);
             }
         }
+        #endregion
 
+
+        #region Updating Controls
         private void SetStartTxtVisible(bool isVisible = true)
         {
             StartTextBox.Visibility = isVisible ? Visibility.Visible : Visibility.Hidden;
@@ -465,39 +508,6 @@ namespace project_gui
             StartTextBox.Visibility = _isGameOver ? Visibility.Visible : Visibility.Hidden;
         }
 
-        private void DrawCharacterImg(Image img, project_logic.Point point)
-        {
-            Canvas.SetLeft(img, point.x + ((_cellSize - _characterLen) / 2));
-            Canvas.SetTop(img, point.y + ((_cellSize - _characterLen) / 2));
-        }
-
-        private void DrawBigBallImg(Image img, PointD point)
-        {
-            Canvas.SetLeft(img, point.x + ((_cellSize - _bigBallLen) / 2));
-            Canvas.SetTop(img, point.y + ((_cellSize - _bigBallLen) / 2));
-        }
-
-        private void DrawSmallBallImg(Image img, PointD point)
-        {
-            Canvas.SetLeft(img, point.x + ((_cellSize - _smallBallLen) / 2));
-            Canvas.SetTop(img, point.y + ((_cellSize - _smallBallLen) / 2));
-        }
-
-        private void Draw()
-        {
-            DrawCharacterImg(_packmanImg, _packman.position);
-
-            foreach (var ghostImg in _ghostsImg)
-            {
-                DrawCharacterImg(ghostImg.Value, GetGhost(ghostImg.Key).position);
-            }
-        }
-
-        private Ghost GetGhost(GhostKind kind)
-        {
-            return _ghosts.First(g => g.kind == kind);
-        }
-
         private void UpdateLifeView(bool restart = false)
         {
             if (restart)
@@ -505,7 +515,7 @@ namespace project_gui
                 LifePanel.Children.Clear();
                 for (int i = 0; i < 3; i++)
                 {
-                    LifePanel.Children.Add(new Image() 
+                    LifePanel.Children.Add(new Image()
                     {
                         Source = new BitmapImage(new Uri(_lifeImgSource, UriKind.RelativeOrAbsolute)),
                         Width = 30,
@@ -519,6 +529,19 @@ namespace project_gui
             {
                 LifePanel.Children.Remove(LifePanel.Children[LifePanel.Children.Count - 1]);
             }
+        }
+
+        private void UpdateScore()
+        {
+            scoreTextBox.Text = $"SCORE: {_packman.score}";
+            //highScoreTextBox.Text = $"HIGH SCORE: {Pacman.highScore}";
+        }
+        #endregion
+
+
+        private Ghost GetGhost(GhostKind kind)
+        {
+            return _ghosts.First(g => g.kind == kind);
         }
     }
 }

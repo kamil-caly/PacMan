@@ -5,7 +5,7 @@ Małe kropki:
   - Pac-Man zdobywa punkty za zjedzenie małych kropek rozmieszczonych w labiryncie -> 10pkt/kropka. ✔
 
 Duże kropki: 
-  - Po zjedzeniu dużej kropki (50pkt/kropka) Pac-Man zyskuje tymczasową zdolność zjadania duchów. Duchy stają się wtedy niebieskie i uciekają przed Pac-Manem. Za zjedzenie każdego ducha w tym stanie gracz otrzymuje dodatkowe punkty -> 200pkt/duch.
+  - Po zjedzeniu dużej kropki (50pkt/kropka) Pac-Man zyskuje tymczasową zdolność zjadania duchów. Duchy stają się wtedy niebieskie i uciekają przed Pac-Manem. Za zjedzenie każdego ducha w tym stanie gracz otrzymuje dodatkowe punkty -> 200pkt/duch. ✔
 
 Duchy:
   - W labiryncie poruszają się cztery duchy: Blinky (czerwony), Pinky (różowy), Inky (niebieski) i Clyde (pomarańczowy).

@@ -1,19 +1,20 @@
-﻿namespace project_logic.characters
+﻿using project_logic.characters.Mediator;
+
+namespace project_logic.characters
 {
     public class Pacman : Character
     {
         public int life { get; set; }
-        public int score { get; set; }
+        public int score { get; set; } = 0;
         public static int highScore { get; set; }
-        public Direction nextDirection { get; set; }
+        public Direction nextDirection { private get; set; }
 
-        public Pacman(int cellSize) : base(cellSize)
+        public Pacman(int cellSize, int life = 3, int speed = 4, Direction dir = Direction.Up) : base(cellSize)
         {
-            life = 3;
-            score = 0;
-            speed = 4; // 5
+            this.life = life;
+            this.speed = speed; // 5
             SetStartPosition();
-            direction = Direction.Up;
+            direction = dir;
             nextDirection = direction;
         }
 
@@ -46,6 +47,7 @@
             {
                 case ScoreType.BigBall:
                     score += 50;
+                    mediator.Notify(this, EventType.EatedBigBall);
                     break;
                 case ScoreType.SmallBall:
                     score += 10;
@@ -68,7 +70,7 @@
             life--;
         }
 
-        public void SetStartPosition()
+        public override void SetStartPosition()
         {
             position = new Point(9 * cellSize, 11 * cellSize);
         }
